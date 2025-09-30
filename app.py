@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="NBER AI Economics - Transcript Explorer",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Initialize OpenAI client
@@ -46,30 +46,30 @@ if 'search_query' not in st.session_state:
 client = get_openai_client()
 videos = load_videos()
 
-# Sidebar
-with st.sidebar:
-    st.title("🎓 NBER AI Economics")
-    st.markdown("### Workshop Transcripts")
-    st.markdown("*Economics of Transformative AI*  \n*Fall 2025*")
+# Header
+st.title("🎓 NBER Economics of Transformative AI Workshop")
+st.markdown("*Fall 2025 • Explore presentations, chat with transcripts, and discover insights*")
 
-    st.divider()
+# Statistics in a compact row
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("📹 Videos", len(videos))
+with col2:
+    st.metric("📝 Transcripts", sum(1 for v in videos if v['has_transcript']))
+with col3:
+    st.metric("👥 Presenters", sum(v['num_presenters'] for v in videos))
+with col4:
+    st.metric("💬 Q&A", "Available")
 
-    mode = st.radio(
-        "Choose Mode:",
-        ["🔍 Search & Browse", "💬 Chat with Transcript", "🌐 Chat with All Transcripts", "👥 Presenters"],
-        index=0
-    )
+st.divider()
 
-    st.divider()
-
-    # Video statistics
-    total_videos = len(videos)
-    videos_with_transcripts = sum(1 for v in videos if v['has_transcript'])
-    total_presenters = sum(v['num_presenters'] for v in videos)
-
-    st.metric("Total Videos", total_videos)
-    st.metric("With Transcripts", videos_with_transcripts)
-    st.metric("Presenters", total_presenters)
+# Main navigation using tabs
+tab1, tab2, tab3, tab4 = st.tabs([
+    "🔍 Search & Browse",
+    "💬 Chat with Video",
+    "🌐 Chat with All",
+    "👥 Presenters"
+])
 
 # Helper functions
 def search_videos(query):
@@ -205,9 +205,9 @@ Answer the user's question by synthesizing information across these presentation
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
-# Main content
-if mode == "🔍 Search & Browse":
-    st.title("🔍 Search & Browse Transcripts")
+# Main content in tabs
+with tab1:
+    st.markdown("### 🔍 Search & Browse Transcripts")
 
     # Search bar
     search_query = st.text_input(
@@ -263,8 +263,8 @@ if mode == "🔍 Search & Browse":
                         st.session_state.messages = []
                         st.rerun()
 
-elif mode == "💬 Chat with Transcript":
-    st.title("💬 Chat with Transcript")
+with tab2:
+    st.markdown("### 💬 Chat with Video Transcript")
 
     # Video selector
     if not st.session_state.selected_video:
@@ -318,8 +318,8 @@ elif mode == "💬 Chat with Transcript":
                     )
                     st.session_state.messages.append({"role": "assistant", "content": response_text})
 
-elif mode == "🌐 Chat with All Transcripts":
-    st.title("🌐 Chat with All Transcripts")
+with tab3:
+    st.markdown("### 🌐 Chat with All Transcripts")
     st.markdown("*Ask questions across all workshop presentations*")
 
     # Show available videos
@@ -365,8 +365,8 @@ elif mode == "🌐 Chat with All Transcripts":
         - "What are the policy recommendations across presentations?"
         """)
 
-elif mode == "👥 Presenters":
-    st.title("👥 Presenters Directory")
+with tab4:
+    st.markdown("### 👥 Presenters Directory")
     st.markdown("*Economics of Transformative AI Workshop - Fall 2025*")
 
     presenters = get_all_presenters()
@@ -401,12 +401,10 @@ elif mode == "👥 Presenters":
 
 # Footer
 st.divider()
-st.markdown(
-    """
-    <div style='text-align: center; color: #666; padding: 20px;'>
-        <p>Built with Streamlit • Powered by OpenAI GPT-4o-mini</p>
-        <p>Data from NBER Economics of Transformative AI Workshop, Fall 2025</p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.caption("🏛️ NBER Workshop Fall 2025")
+with col2:
+    st.caption("🤖 Powered by OpenAI GPT-4o-mini")
+with col3:
+    st.caption("⚡ Built with Streamlit")
