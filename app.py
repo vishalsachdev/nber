@@ -196,8 +196,15 @@ if mode == "🔍 Search & Browse":
 
                 st.markdown(f"**[🔗 Watch on YouTube]({video['url']})**")
 
+                # Display AI-generated summary
+                if video.get('ai_summary'):
+                    st.markdown("**📝 AI-Generated Summary:**")
+                    st.info(video['ai_summary'])
+                    st.caption("*Summary generated using OpenAI GPT-4o-mini*")
+
+                # Original description as expandable
                 if video.get('description'):
-                    with st.expander("📄 View Description"):
+                    with st.expander("📄 View Full Description"):
                         st.text(video['description'])
 
             with col2:
