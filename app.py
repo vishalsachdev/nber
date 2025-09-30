@@ -258,9 +258,10 @@ with tab1:
                     st.metric("Words", f"{video.get('word_count', 0):,}")
 
                 if video['has_transcript']:
-                    if st.button("💬 Chat with this transcript", key=f"chat_{video['id']}"):
+                    if st.button("💬 Start Chat", key=f"chat_{video['id']}"):
                         st.session_state.selected_video = video
                         st.session_state.messages = []
+                        st.success("✅ Video selected! Switch to the **'💬 Chat with Video'** tab above to start chatting.")
                         st.rerun()
 
 with tab2:
@@ -268,16 +269,20 @@ with tab2:
 
     # Video selector
     if not st.session_state.selected_video:
-        st.info("👈 Please select a video from Search & Browse mode first")
+        st.info("💡 Select a video from **'🔍 Search & Browse'** tab or choose one below")
 
         # Quick select
-        st.markdown("### Or select a video here:")
+        st.markdown("### Choose a video to chat with:")
         available_videos = [v for v in videos if v['has_transcript']]
 
-        video_options = {f"{v['title'][:60]}...": v for v in available_videos}
-        selected_title = st.selectbox("Choose a video:", list(video_options.keys()))
+        video_options = {f"{v['title']}": v for v in available_videos}
+        selected_title = st.selectbox(
+            "Available transcripts:",
+            list(video_options.keys()),
+            label_visibility="collapsed"
+        )
 
-        if st.button("Start Chat"):
+        if st.button("💬 Start Chat", type="primary"):
             st.session_state.selected_video = video_options[selected_title]
             st.session_state.messages = []
             st.rerun()
