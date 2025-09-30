@@ -41,6 +41,12 @@ wheels/
 # macOS
 .DS_Store
 
+# Environment variables (API keys)
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
 # Project-specific (keep data files in repo)
 # Uncomment if you want to exclude large data files:
 # *.json
