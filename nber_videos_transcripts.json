@@ -6,19 +6,23 @@
     "presenters": [
       {
         "name": "Jens Ludwig",
-        "affiliation": "University of Chicago and NBER"
+        "affiliation": "University of Chicago and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=8IWkmnEAAAAJ"
       },
       {
         "name": "Sendhil Mullainathan",
-        "affiliation": "Massachusetts Institute of Technology and NBER"
+        "affiliation": "Massachusetts Institute of Technology and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=oExfyEkAAAAJ"
       },
       {
         "name": "Sophia L. Pink",
-        "affiliation": "University of Pennsylvania"
+        "affiliation": "University of Pennsylvania",
+        "scholar_url": "https://scholar.google.com/citations?user=AttCoCcAAAAJ"
       },
       {
         "name": "Ashesh Rambanchan",
-        "affiliation": "Massachusetts Institute of Technology"
+        "affiliation": "Massachusetts Institute of Technology",
+        "scholar_url": "https://scholar.google.com/citations?user=BfFr_DAAAAAJ"
       }
     ],
     "num_presenters": 4,
@@ -37,11 +41,13 @@
     "presenters": [
       {
         "name": "Sam J. Manning",
-        "affiliation": "Centre for the Governance of AI"
+        "affiliation": "Centre for the Governance of AI",
+        "scholar_url": "https://scholar.google.com/citations?user=-gjxfJgAAAAJ"
       },
       {
         "name": "Tomas Aguirre",
-        "affiliation": "University of Sao Paulo"
+        "affiliation": "University of Sao Paulo",
+        "scholar_url": "https://scholar.google.com/citations?user=YpyfZgQAAAAJ"
       }
     ],
     "num_presenters": 2,
@@ -60,11 +66,13 @@
     "presenters": [
       {
         "name": "Anton Korinek",
-        "affiliation": "University of Virginia and NBER"
+        "affiliation": "University of Virginia and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=zcleqRcAAAAJ"
       },
       {
         "name": "Lee Lockwood",
-        "affiliation": "University of Virginia and NBER"
+        "affiliation": "University of Virginia and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=7dlv01MAAAAJ"
       }
     ],
     "num_presenters": 2,
@@ -83,15 +91,18 @@
     "presenters": [
       {
         "name": "Aaron Chatterji",
-        "affiliation": "Duke University and OpenAI and NBER"
+        "affiliation": "Duke University and OpenAI and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=eKqVx84AAAAJ"
       },
       {
         "name": "Daniel Rock",
-        "affiliation": "University of Pennsylvania"
+        "affiliation": "University of Pennsylvania",
+        "scholar_url": "https://scholar.google.com/citations?user=2ftcO0wAAAAJ"
       },
       {
         "name": "Eduard Talamas",
-        "affiliation": "IESE Business School"
+        "affiliation": "IESE Business School",
+        "scholar_url": "https://scholar.google.com/citations?user=swoJiIcAAAAJ"
       }
     ],
     "num_presenters": 3,
@@ -110,11 +121,13 @@
     "presenters": [
       {
         "name": "Gillian Hadfield",
-        "affiliation": "Johns Hopkins University"
+        "affiliation": "Johns Hopkins University",
+        "scholar_url": "https://scholar.google.com/citations?user=7cU2rQsAAAAJ"
       },
       {
         "name": "Andrew Koh",
-        "affiliation": "Massachusetts Institute of Technology"
+        "affiliation": "Massachusetts Institute of Technology",
+        "scholar_url": "https://scholar.google.com/citations?user=1NHDFnoAAAAJ"
       }
     ],
     "num_presenters": 2,
@@ -133,7 +146,8 @@
     "presenters": [
       {
         "name": "Betsey Stevenson",
-        "affiliation": "University of Michigan and NBER"
+        "affiliation": "University of Michigan and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=rN1w41IAAAAJ"
       }
     ],
     "num_presenters": 1,
@@ -152,7 +166,8 @@
     "presenters": [
       {
         "name": "Pascual Restrepo",
-        "affiliation": "Yale University and NBER"
+        "affiliation": "Yale University and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=R2wIIzMAAAAJ"
       }
     ],
     "num_presenters": 1,
@@ -171,7 +186,8 @@
     "presenters": [
       {
         "name": "Joseph E. Stiglitz",
-        "affiliation": "Columbia University and NBER"
+        "affiliation": "Columbia University and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=2AF4iHIAAAAJ"
       },
       {
         "name": "Maxim Ventura-Bolet",
@@ -202,15 +218,18 @@
       },
       {
         "name": "Benjamin S. Manning",
-        "affiliation": "Massachusetts Institute of Technology"
+        "affiliation": "Massachusetts Institute of Technology",
+        "scholar_url": "https://scholar.google.com/citations?user=teSF3_AAAAAJ"
       },
       {
         "name": "Andrey Fradkin",
-        "affiliation": "Boston University"
+        "affiliation": "Boston University",
+        "scholar_url": "https://scholar.google.com/citations?user=5qkgRKsAAAAJ"
       },
       {
         "name": "John J. Horton",
-        "affiliation": "Massachusetts Institute of Technology and NBER"
+        "affiliation": "Massachusetts Institute of Technology and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=L_O2kH0AAAAJ"
       },
       {
         "name": "The Coasean Singularity? Demand",
@@ -241,7 +260,8 @@
     "presenters": [
       {
         "name": "Charles I. Jones",
-        "affiliation": "Stanford University and NBER"
+        "affiliation": "Stanford University and NBER",
+        "scholar_url": "https://scholar.google.com/citations?user=aEovwtUAAAAJ"
       }
     ],
     "num_presenters": 1,
