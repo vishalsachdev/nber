@@ -56,7 +56,7 @@ with st.sidebar:
 
     mode = st.radio(
         "Choose Mode:",
-        ["🔍 Search & Browse", "💬 Chat with Transcript", "👥 Presenters"],
+        ["🔍 Search & Browse", "💬 Chat with Transcript", "🌐 Chat with All Transcripts", "👥 Presenters"],
         index=0
     )
 
@@ -153,6 +153,51 @@ Answer the user's question based on this transcript. Be concise and cite specifi
             ],
             temperature=0.7,
             max_tokens=1000,
+            stream=True
+        )
+
+        return response
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+def chat_with_all_transcripts(user_message):
+    """Generate response using OpenAI with context from all transcripts"""
+    # Get all videos with transcripts
+    available_videos = [v for v in videos if v.get('transcript')]
+
+    if not available_videos:
+        return "❌ No transcripts available."
+
+    # Build combined context with video summaries
+    video_summaries = []
+    for video in available_videos:
+        title = video['title']
+        presenters = ', '.join([p['name'] for p in video.get('presenters', [])])
+        # Use AI summary if available, otherwise use first 500 chars of transcript
+        summary = video.get('ai_summary', video['transcript'][:500])
+        video_summaries.append(f"**{title}** by {presenters}\n{summary}")
+
+    context = f"""You are an AI assistant helping users understand presentations from the NBER Economics of Transformative AI Workshop (Fall 2025).
+
+You have access to information from {len(available_videos)} presentations:
+
+{chr(10).join(video_summaries[:10])}  # Limit to first 10 to stay within token limits
+
+Answer the user's question by synthesizing information across these presentations. When referencing specific presentations, mention the title and presenter. If the question relates to a specific topic, identify which presentations are most relevant."""
+
+    # Add to message history
+    st.session_state.messages.append({"role": "user", "content": user_message})
+
+    # Call OpenAI API
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": context},
+                *st.session_state.messages
+            ],
+            temperature=0.7,
+            max_tokens=1200,
             stream=True
         )
 
@@ -272,6 +317,53 @@ elif mode == "💬 Chat with Transcript":
                         (chunk.choices[0].delta.content or "" for chunk in response_stream)
                     )
                     st.session_state.messages.append({"role": "assistant", "content": response_text})
+
+elif mode == "🌐 Chat with All Transcripts":
+    st.title("🌐 Chat with All Transcripts")
+    st.markdown("*Ask questions across all workshop presentations*")
+
+    # Show available videos
+    available_videos = [v for v in videos if v['has_transcript']]
+
+    with st.expander(f"📚 Available Transcripts ({len(available_videos)} videos)"):
+        for video in available_videos:
+            st.markdown(f"- **{video['title']}** by {', '.join([p['name'] for p in video.get('presenters', [])])}")
+
+    st.divider()
+
+    # Chat interface
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Chat input
+    if prompt := st.chat_input("Ask a question about the workshop presentations..."):
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Generate response
+        with st.chat_message("assistant"):
+            response_stream = chat_with_all_transcripts(prompt)
+
+            if isinstance(response_stream, str):
+                st.markdown(response_stream)
+            else:
+                response_text = st.write_stream(
+                    (chunk.choices[0].delta.content or "" for chunk in response_stream)
+                )
+                st.session_state.messages.append({"role": "assistant", "content": response_text})
+
+    # Helpful prompts
+    if not st.session_state.messages:
+        st.markdown("### 💡 Try asking:")
+        st.markdown("""
+        - "What are the main concerns about AI and labor markets?"
+        - "Which presentations discuss behavioral economics?"
+        - "What did Joseph Stiglitz say about AI?"
+        - "Compare the different perspectives on AI's economic impact"
+        - "What are the policy recommendations across presentations?"
+        """)
 
 elif mode == "👥 Presenters":
     st.title("👥 Presenters Directory")
