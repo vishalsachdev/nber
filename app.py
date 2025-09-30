@@ -286,7 +286,24 @@ with tab2:
 
         # Display video info
         st.markdown(f"### 📹 {video['title']}")
-        st.markdown(f"*Presenters: {', '.join([p['name'] for p in video.get('presenters', [])])}*")
+
+        # Presenters with Google Scholar links
+        presenter_links = []
+        for p in video.get('presenters', []):
+            if p.get('scholar_url'):
+                presenter_links.append(f"[{p['name']}]({p['scholar_url']})")
+            else:
+                presenter_links.append(p['name'])
+        st.markdown(f"**Presenters:** {', '.join(presenter_links)}")
+
+        # Video link
+        st.markdown(f"**[🔗 Watch on YouTube]({video['url']})**")
+
+        # AI Summary
+        if video.get('ai_summary'):
+            with st.expander("📝 AI-Generated Summary", expanded=True):
+                st.info(video['ai_summary'])
+                st.caption("*Summary generated using OpenAI GPT-4o-mini*")
 
         if st.button("← Back to Search"):
             st.session_state.selected_video = None
@@ -327,7 +344,15 @@ with tab3:
 
     with st.expander(f"📚 Available Transcripts ({len(available_videos)} videos)"):
         for video in available_videos:
-            st.markdown(f"- **{video['title']}** by {', '.join([p['name'] for p in video.get('presenters', [])])}")
+            # Create presenter links
+            presenter_links = []
+            for p in video.get('presenters', []):
+                if p.get('scholar_url'):
+                    presenter_links.append(f"[{p['name']}]({p['scholar_url']})")
+                else:
+                    presenter_links.append(p['name'])
+
+            st.markdown(f"- **[{video['title']}]({video['url']})** by {', '.join(presenter_links)}")
 
     st.divider()
 
