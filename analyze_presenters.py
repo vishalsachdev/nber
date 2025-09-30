@@ -7,7 +7,7 @@ import json
 from collections import defaultdict, Counter
 from typing import List, Dict, Any
 
-def load_videos(filename: str = "nber_videos.json") -> List[Dict[str, Any]]:
+def load_videos(filename: str = "nber_videos_transcripts.json") -> List[Dict[str, Any]]:
     """Load videos from JSON file."""
     with open(filename, 'r', encoding='utf-8') as f:
         return json.load(f)

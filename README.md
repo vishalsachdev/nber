@@ -34,7 +34,7 @@ All scripts should be run with `uv run` to ensure proper environment isolation:
 ### Extract Transcripts from Recent Videos
 
 ```bash
-# Extract transcripts for specific video list
+# Extract transcripts for specific video list (edit video IDs in script)
 uv run python extract_transcripts.py
 ```
 
@@ -45,18 +45,11 @@ uv run python extract_transcripts.py
 uv run python recheck_missing_transcripts.py
 ```
 
-### Fetch Videos by Date
+### Analyze Presenters
 
 ```bash
-# Fetch N most recent videos (default: 10)
-uv run python fetch_nber_videos.py 5
-```
-
-### Check Recent Uploads
-
-```bash
-# View recent video upload dates
-uv run python check_recent_videos.py
+# Get statistics and search through presenter information
+uv run python analyze_presenters.py
 ```
 
 ## Project Structure
@@ -65,18 +58,16 @@ uv run python check_recent_videos.py
 .
 ├── extract_transcripts.py          # Main script to extract transcripts
 ├── recheck_missing_transcripts.py  # Retry missing transcripts
-├── fetch_nber_videos.py            # Fetch videos by count
-├── check_recent_videos.py          # Check upload dates
+├── analyze_presenters.py           # Analyze and query presenter data
 ├── video_status.json               # Track which videos need rechecking
-├── nber_videos_transcripts.json    # Full transcript data
+├── nber_videos_transcripts.json    # Full transcript data with metadata
 └── pyproject.toml                  # Project dependencies
 ```
 
 ## Data Files
 
-- **`video_status.json`** - Tracking file showing completed vs pending videos
-- **`nber_videos_transcripts.json`** - Full transcript data with metadata
-- **`nber_videos.json`** - Video metadata only
+- **`nber_videos_transcripts.json`** - Complete data: transcripts, metadata, presenters (17 videos, ~55K words)
+- **`video_status.json`** - Tracking file showing completed (10) vs pending (7) videos
 
 ## Adding Dependencies
 
