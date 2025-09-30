@@ -7,7 +7,26 @@
     "url": "https://www.youtube.com/watch?v=-K2Aek8qxh8",
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented b: \nJens Ludwig, University of Chicago and NBER\nSendhil Mullainathan, Massachusetts Institute of Technology and NBER\nSophia L. Pink, University of Pennsylvania\n‭Ashesh Rambanchan, Massachusetts Institute of Technology\nAlgorithms as A Vehicle to Reflective Equilibrium:‬ Behavioral Economics 2.0\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "transcript": null,
-    "has_transcript": false
+    "has_transcript": false,
+    "presenters": [
+      {
+        "name": "Jens Ludwig",
+        "affiliation": "University of Chicago and NBER"
+      },
+      {
+        "name": "Sendhil Mullainathan",
+        "affiliation": "Massachusetts Institute of Technology and NBER"
+      },
+      {
+        "name": "Sophia L. Pink",
+        "affiliation": "University of Pennsylvania"
+      },
+      {
+        "name": "‭Ashesh Rambanchan",
+        "affiliation": "Massachusetts Institute of Technology"
+      }
+    ],
+    "num_presenters": 4
   },
   {
     "id": "64F1sfm5kGI",
@@ -17,7 +36,18 @@
     "url": "https://www.youtube.com/watch?v=64F1sfm5kGI",
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented by: \nSam J. Manning, Centre for the Governance of AI\nTomas Aguirre, University of Sao Paulo\nAI Exposure and the Adaptive Capacity of American Workers\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "transcript": null,
-    "has_transcript": false
+    "has_transcript": false,
+    "presenters": [
+      {
+        "name": "Sam J. Manning",
+        "affiliation": "Centre for the Governance of AI"
+      },
+      {
+        "name": "Tomas Aguirre",
+        "affiliation": "University of Sao Paulo"
+      }
+    ],
+    "num_presenters": 2
   },
   {
     "id": "i2qpFggisxI",
@@ -27,7 +57,18 @@
     "url": "https://www.youtube.com/watch?v=i2qpFggisxI",
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented by: \nAnton Korinek, University of Virginia and NBER\nLee Lockwood, University of Virginia and NBER\nPublic Finance in the Age of AI: A Primer\nScience in the Age of Algorithms\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "transcript": null,
-    "has_transcript": false
+    "has_transcript": false,
+    "presenters": [
+      {
+        "name": "Anton Korinek",
+        "affiliation": "University of Virginia and NBER"
+      },
+      {
+        "name": "Lee Lockwood",
+        "affiliation": "University of Virginia and NBER"
+      }
+    ],
+    "num_presenters": 2
   },
   {
     "id": "06kDdPboRMg",
@@ -37,7 +78,22 @@
     "url": "https://www.youtube.com/watch?v=06kDdPboRMg",
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented by: \nAaron Chatterji, Duke University and OpenAI and NBER\nDaniel Rock, University of Pennsylvania\nEduard Talamas, IESE Business School\nTransformative AI and Firms\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "transcript": null,
-    "has_transcript": false
+    "has_transcript": false,
+    "presenters": [
+      {
+        "name": "Aaron Chatterji",
+        "affiliation": "Duke University and OpenAI and NBER"
+      },
+      {
+        "name": "Daniel Rock",
+        "affiliation": "University of Pennsylvania"
+      },
+      {
+        "name": "Eduard Talamas",
+        "affiliation": "IESE Business School"
+      }
+    ],
+    "num_presenters": 3
   },
   {
     "id": "kE4JQN-vwjM",
@@ -47,6 +103,17 @@
     "url": "https://www.youtube.com/watch?v=kE4JQN-vwjM",
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented by: \nGillian Hadfield, Johns Hopkins University\nAndrew Koh, Massachusetts Institute of Technology\nAn Economy of AI Agents\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "transcript": null,
-    "has_transcript": false
+    "has_transcript": false,
+    "presenters": [
+      {
+        "name": "Gillian Hadfield",
+        "affiliation": "Johns Hopkins University"
+      },
+      {
+        "name": "Andrew Koh",
+        "affiliation": "Massachusetts Institute of Technology"
+      }
+    ],
+    "num_presenters": 2
   }
 ]
