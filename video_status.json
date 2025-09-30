@@ -1,8 +1,8 @@
 {
   "last_updated": "2025-09-30",
   "total_videos": 17,
-  "videos_with_transcripts": 10,
-  "videos_needing_check": 7,
+  "videos_with_transcripts": 17,
+  "videos_needing_check": 0,
   "videos": [
     {
       "id": "-K2Aek8qxh8",
@@ -95,83 +95,68 @@
       "needs_recheck": false
     },
     {
-      "id": "5q31h9uxaUA",
+      "id": "G5teYbovYJ0",
       "title": "Artificial Intelligence in Research and Development",
-      "url": "https://www.youtube.com/watch?v=5q31h9uxaUA",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=G5teYbovYJ0",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 7581,
+      "needs_recheck": false
     },
     {
-      "id": "Lq2kIqBqTmY",
+      "id": "by7k-H7sZ8A",
       "title": "Genius on Demand: The Value of Transformative",
-      "url": "https://www.youtube.com/watch?v=Lq2kIqBqTmY",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=by7k-H7sZ8A",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 7703,
+      "needs_recheck": false
     },
     {
-      "id": "rYwpBKqCq_A",
+      "id": "SDU2oldSxqU",
       "title": "Economics of Transformative AI Workshop, Fall 2025 - Welcome",
-      "url": "https://www.youtube.com/watch?v=rYwpBKqCq_A",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=SDU2oldSxqU",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 1064,
+      "needs_recheck": false
     },
     {
-      "id": "CiDfmCcWDBo",
+      "id": "HCLAJhYurEY",
       "title": "Making AI Count: The Next Measurement Frontier?",
-      "url": "https://www.youtube.com/watch?v=CiDfmCcWDBo",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=HCLAJhYurEY",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5133,
+      "needs_recheck": false
     },
     {
-      "id": "TjV-b8s-Svc",
+      "id": "ifdSUKrJxqM",
       "title": "Artificial Intelligence, Competition, and Welfare",
-      "url": "https://www.youtube.com/watch?v=TjV-b8s-Svc",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=ifdSUKrJxqM",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5626,
+      "needs_recheck": false
     },
     {
-      "id": "GVbipjVhh4w",
+      "id": "FBdf9Y70fMg",
       "title": "AI's Use of Knowledge in Society",
-      "url": "https://www.youtube.com/watch?v=GVbipjVhh4w",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=FBdf9Y70fMg",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 4080,
+      "needs_recheck": false
     },
     {
-      "id": "lQjlHM9R5Us",
+      "id": "6MSSvxDz06o",
       "title": "Science in the Age of Algorithms",
-      "url": "https://www.youtube.com/watch?v=lQjlHM9R5Us",
-      "status": "pending",
-      "has_transcript": false,
-      "word_count": 0,
-      "needs_recheck": true,
-      "reason": "Transcript not yet available"
+      "url": "https://www.youtube.com/watch?v=6MSSvxDz06o",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5761,
+      "needs_recheck": false
     }
   ],
-  "videos_to_recheck": [
-    "5q31h9uxaUA",
-    "Lq2kIqBqTmY",
-    "rYwpBKqCq_A",
-    "CiDfmCcWDBo",
-    "TjV-b8s-Svc",
-    "GVbipjVhh4w",
-    "lQjlHM9R5Us"
-  ]
+  "videos_to_recheck": []
 }

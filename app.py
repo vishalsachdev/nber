@@ -50,6 +50,18 @@ videos = load_videos()
 st.title("🎓 NBER Economics of Transformative AI Workshop")
 st.markdown("*Fall 2025 • Explore presentations, chat with transcripts, and discover insights*")
 
+# Workshop description and link
+st.markdown("""
+This workshop brings together leading economists to explore the economic implications of transformative artificial intelligence.
+Organized by Ajay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, the workshop examines how AI will reshape labor markets,
+firm dynamics, innovation, competition, and economic policy.
+
+**[📺 Watch all presentations on YouTube](https://www.youtube.com/@NBERvideos/videos)** •
+**[📄 Workshop Details (NBER)](https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025)**
+""")
+
+st.divider()
+
 # Statistics in a compact row
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -247,11 +259,6 @@ with tab1:
                     st.info(video['ai_summary'])
                     st.caption("*Summary generated using OpenAI GPT-4o-mini*")
 
-                # Original description as expandable
-                if video.get('description'):
-                    with st.expander("📄 View Full Description"):
-                        st.text(video['description'])
-
             with col2:
                 st.metric("Transcript", "✅ Available" if video['has_transcript'] else "❌ Not Available")
                 if video['has_transcript']:
@@ -304,12 +311,6 @@ with tab2:
         # Video link
         st.markdown(f"**[🔗 Watch on YouTube]({video['url']})**")
 
-        # AI Summary
-        if video.get('ai_summary'):
-            with st.expander("📝 AI-Generated Summary", expanded=True):
-                st.info(video['ai_summary'])
-                st.caption("*Summary generated using OpenAI GPT-4o-mini*")
-
         if st.button("← Back to Search"):
             st.session_state.selected_video = None
             st.session_state.messages = []
@@ -317,7 +318,7 @@ with tab2:
 
         st.divider()
 
-        # Chat interface
+        # Chat interface (moved before summary)
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
@@ -340,28 +341,32 @@ with tab2:
                     )
                     st.session_state.messages.append({"role": "assistant", "content": response_text})
 
+        # AI Summary (shown expanded if no chat messages yet)
+        if video.get('ai_summary'):
+            st.divider()
+            # Expand summary only when no messages (first time viewing)
+            is_expanded = len(st.session_state.messages) == 0
+            with st.expander("📝 AI-Generated Summary", expanded=is_expanded):
+                st.info(video['ai_summary'])
+                st.caption("*Summary generated using OpenAI GPT-4o-mini*")
+
 with tab3:
     st.markdown("### 🌐 Chat with All Transcripts")
     st.markdown("*Ask questions across all workshop presentations*")
 
-    # Show available videos
-    available_videos = [v for v in videos if v['has_transcript']]
+    # Helpful prompts (moved to top when no messages)
+    if not st.session_state.messages:
+        st.markdown("### 💡 Try asking:")
+        st.markdown("""
+        - "What are the main concerns about AI and labor markets?"
+        - "Which presentations discuss behavioral economics?"
+        - "What did Joseph Stiglitz say about AI?"
+        - "Compare the different perspectives on AI's economic impact"
+        - "What are the policy recommendations across presentations?"
+        """)
+        st.divider()
 
-    with st.expander(f"📚 Available Transcripts ({len(available_videos)} videos)"):
-        for video in available_videos:
-            # Create presenter links
-            presenter_links = []
-            for p in video.get('presenters', []):
-                if p.get('scholar_url'):
-                    presenter_links.append(f"[{p['name']}]({p['scholar_url']})")
-                else:
-                    presenter_links.append(p['name'])
-
-            st.markdown(f"- **[{video['title']}]({video['url']})** by {', '.join(presenter_links)}")
-
-    st.divider()
-
-    # Chat interface
+    # Chat interface (moved before available transcripts list)
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
@@ -384,16 +389,21 @@ with tab3:
                 )
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
 
-    # Helpful prompts
-    if not st.session_state.messages:
-        st.markdown("### 💡 Try asking:")
-        st.markdown("""
-        - "What are the main concerns about AI and labor markets?"
-        - "Which presentations discuss behavioral economics?"
-        - "What did Joseph Stiglitz say about AI?"
-        - "Compare the different perspectives on AI's economic impact"
-        - "What are the policy recommendations across presentations?"
-        """)
+    # Show available videos (moved to bottom as collapsed reference)
+    available_videos = [v for v in videos if v['has_transcript']]
+
+    st.divider()
+    with st.expander(f"📚 Available Transcripts ({len(available_videos)} videos)", expanded=False):
+        for video in available_videos:
+            # Create presenter links
+            presenter_links = []
+            for p in video.get('presenters', []):
+                if p.get('scholar_url'):
+                    presenter_links.append(f"[{p['name']}]({p['scholar_url']})")
+                else:
+                    presenter_links.append(p['name'])
+
+            st.markdown(f"- **[{video['title']}]({video['url']})** by {', '.join(presenter_links)}")
 
 with tab4:
     st.markdown("### 👥 Presenters Directory")

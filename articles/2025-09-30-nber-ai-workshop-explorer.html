@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building an AI-Powered Research Assistant: From YouTube Transcripts to Interactive Knowledge Base</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        article {
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.6em;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin-top: 30px;
+            margin-bottom: 12px;
+        }
+        .meta {
+            color: #777;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .stat-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .lesson-box {
+            background: #f0f8e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        ul, ol {
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #777;
+            font-style: italic;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .checkmark {
+            color: #27ae60;
+        }
+        .warning {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h1>Building an AI-Powered Research Assistant: From YouTube Transcripts to Interactive Knowledge Base</h1>
+        <p class="meta">September 30, 2025</p>
+
+        <p>When the NBER Economics of Transformative AI Workshop dropped 17 presentations on YouTube, I saw an opportunity: what if researchers could have a conversation with these presentations instead of watching hours of video? Six hours of conversational development with Claude later, I had a fully functional AI-powered research assistant that lets you search, browse, and chat with 91,733 words of academic content.</p>
+
+        <p>This is the story of building that tool—from extracting YouTube transcripts to handling changed video IDs to optimizing for public launch—and what it taught me about the new paradigm of conversational software development.</p>
+
+        <h2>The Challenge: Making Dense Academic Content Accessible</h2>
+
+        <p>Academic workshops are goldmines of cutting-edge research, but they're incredibly time-consuming to digest. The NBER's Economics of Transformative AI Workshop featured presentations from luminaries like Daron Acemoglu, Paul Romer, and Erik Brynjolfsson. Each video ran 30-60 minutes. For a researcher trying to find specific insights about, say, "AI's impact on labor markets," the traditional workflow meant:</p>
+
+        <ol>
+            <li>Watch multiple hour-long videos</li>
+            <li>Manually skim through transcripts</li>
+            <li>Take notes on relevant sections</li>
+            <li>Cross-reference insights across presentations</li>
+        </ol>
+
+        <p>What if you could just ask: <em>"What are the main concerns about AI and labor markets across all presentations?"</em> and get a synthesized answer citing specific talks?</p>
+
+        <p>That's what we built.</p>
+
+        <h2>Phase 1: The Data Pipeline (Hours 0-2)</h2>
+
+        <h3>Starting Point: YouTube Transcripts</h3>
+
+        <p>The first step was extracting transcripts from YouTube. I started with the <code>youtube-transcript-api</code> library, which provides a clean Python interface to YouTube's transcript data:</p>
+
+        <pre><code>from youtube_transcript_api import YouTubeTranscriptApi
+
+def get_transcript(video_id):
+    try:
+        api = YouTubeTranscriptApi()
+        transcript_data = api.fetch(video_id)
+
+        if hasattr(transcript_data, 'snippets'):
+            return ' '.join([snippet.text for snippet in transcript_data.snippets])
+        return None
+    except (TranscriptsDisabled, NoTranscriptFound):
+        return None</code></pre>
+
+        <p>This worked beautifully for 10 of the 17 videos. The remaining 7 returned "transcript not available." At first, I assumed they were simply too new—YouTube sometimes takes 24-48 hours to generate transcripts for newly uploaded videos.</p>
+
+        <h3>The Mystery of the Missing Transcripts</h3>
+
+        <p>Fast forward to today. I rechecked those 7 "missing" videos and discovered something interesting: YouTube had <em>changed their video IDs</em>. The URLs I had originally scraped were returning "video unavailable" errors.</p>
+
+        <div class="lesson-box">
+            <strong>Lesson learned:</strong> YouTube's video management is more dynamic than expected. Always verify IDs when dealing with automated scraping.
+        </div>
+
+        <div class="stat-box">
+            <strong>Final data corpus:</strong>
+            <ul>
+                <li>17 videos with complete transcripts</li>
+                <li>91,733 total words (~360 pages)</li>
+                <li>Average 5,400 words per video</li>
+            </ul>
+        </div>
+
+        <h2>Phase 2: Enrichment - Adding Context and Intelligence</h2>
+
+        <p>Raw transcripts are useful, but not enough. Researchers need context: <em>Who presented this? Where can I find their other work? What's this talk actually about?</em></p>
+
+        <h3>AI-Generated Summaries</h3>
+
+        <p>Here's where things got interesting. Reading even a short academic transcript can take 10-15 minutes. What if we could generate concise 2-3 paragraph summaries using AI?</p>
+
+        <pre><code>def generate_summary(client, video):
+    transcript_excerpt = video['transcript'][:12000]  # Stay within token limits
+
+    prompt = f"""Summarize this NBER presentation:
+
+    Title: {video['title']}
+    Presenters: {presenters}
+
+    Create a 2-3 paragraph summary capturing:
+    1. Main research question
+    2. Key findings
+    3. Important implications
+
+    Transcript: {transcript_excerpt}
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+        max_tokens=500
+    )
+
+    return response.choices[0].message.content</code></pre>
+
+        <div class="stat-box">
+            <strong>Cost analysis:</strong> With GPT-4o-mini at $0.15 per 1M input tokens and $0.60 per 1M output tokens:
+            <ul>
+                <li>Per summary: ~4K input + 200 output tokens = <strong>$0.0007</strong></li>
+                <li>All 17 summaries: <strong>$0.012 total</strong></li>
+            </ul>
+            <p>For just over a penny, every video now had a publication-quality abstract.</p>
+        </div>
+
+        <h2>Phase 3: The Interactive Interface</h2>
+
+        <p>Now came the fun part: building an interface that made this knowledge accessible.</p>
+
+        <h3>Streamlit: Rapid Prototyping for Data Apps</h3>
+
+        <p>I chose Streamlit because it lets you build data-heavy web apps with pure Python—no HTML, CSS, or JavaScript required. Here's the entire app startup:</p>
+
+        <pre><code>import streamlit as st
+
+st.set_page_config(
+    page_title="NBER AI Economics - Transcript Explorer",
+    layout="wide"
+)
+
+@st.cache_data
+def load_videos():
+    with open('nber_videos_transcripts.json', 'r') as f:
+        return json.load(f)
+
+videos = load_videos()</code></pre>
+
+        <h3>Four-Tab Navigation Structure</h3>
+
+        <p>The app evolved into four distinct modes:</p>
+
+        <p><strong>1. Search & Browse</strong><br>
+        Full-text search across titles, presenters, and transcript content. Each result shows AI-generated summaries, presenter info with Google Scholar links, and word count metrics.</p>
+
+        <p><strong>2. Chat with Video</strong><br>
+        Select a specific presentation and have a conversation about it. The chat interface uses OpenAI's GPT-4o-mini with the transcript as context:</p>
+
+        <pre><code>def chat_with_transcript(video, user_message):
+    context = f"""You are helping users understand this NBER presentation.
+
+Video: {video['title']}
+Presenters: {', '.join([p['name'] for p in video['presenters']])}
+
+Transcript (excerpt):
+{video['transcript'][:15000]}  # ~15K chars ≈ 4K tokens
+
+Answer concisely and cite specific points from the presentation."""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": context},
+            *st.session_state.messages
+        ],
+        max_tokens=1000,
+        stream=True
+    )
+
+    return response</code></pre>
+
+        <p><strong>Key design decision:</strong> Limiting transcript context to 15,000 characters (~4K tokens) keeps costs low while providing enough detail. For a 30-minute presentation, this covers roughly half the content—enough to answer most questions.</p>
+
+        <p><strong>3. Chat with All Transcripts</strong><br>
+        The most ambitious feature: cross-video querying. Instead of sending all 91K words to the API (astronomically expensive), we use the AI-generated summaries as context. This reduces context size by ~95% while maintaining semantic coverage. <strong>Cost per query: ~$0.003</strong></p>
+
+        <p><strong>4. Presenters Directory</strong><br>
+        A browsable directory of all 38 presenters with their affiliations, Google Scholar profiles, and which videos they appeared in.</p>
+
+        <h2>Phase 4: UX Refinements and Cost Optimization</h2>
+
+        <h3>Layout Optimization: Chat-First Design</h3>
+
+        <p>Original design flaw: When you opened "Chat with Video," you saw the video metadata and AI summary <em>first</em>, with the chat interface buried below. But the chat is the primary feature!</p>
+
+        <p>We reorganized the layout to prioritize the chat interface, with the summary collapsing automatically after you start chatting.</p>
+
+        <h3>Title Standardization</h3>
+
+        <p>YouTube's title format was inconsistent. We standardized to clean, readable titles and reordered videos to put the welcome talk first, giving new users a natural entry point.</p>
+
+        <h2>Technical Deep Dive: The Architecture</h2>
+
+        <h3>Data Structure</h3>
+
+        <p>Everything centers on a single JSON file with this schema:</p>
+
+        <pre><code>{
+  "id": "video_id",
+  "title": "Video Title",
+  "url": "https://youtube.com/watch?v=...",
+  "presenters": [
+    {
+      "name": "Researcher Name",
+      "affiliation": "Institution",
+      "scholar_url": "https://scholar.google.com/..."
+    }
+  ],
+  "ai_summary": "AI-generated 2-3 paragraph summary",
+  "has_transcript": true,
+  "word_count": 5400,
+  "transcript": "Full transcript text..."
+}</code></pre>
+
+        <p><strong>Why a single JSON file?</strong> For this scale (17 videos, ~10MB), a database adds unnecessary complexity. JSON loads in milliseconds, is version-control friendly, and makes the project trivially deployable.</p>
+
+        <h3>OpenAI Integration: Context Windows and Token Management</h3>
+
+        <div class="stat-box">
+            <strong>Cost per interaction:</strong>
+            <ul>
+                <li>Single Video Chat: <span class="checkmark">$0.002-0.005</span></li>
+                <li>Multi-Video Chat: <span class="checkmark">$0.003-0.006</span></li>
+            </ul>
+        </div>
+
+        <p><strong>Key optimizations:</strong></p>
+        <ol>
+            <li>Truncate transcripts to 15K chars (full transcripts can be 40K+)</li>
+            <li>Use summaries instead of full text for cross-video queries</li>
+            <li>Limit <code>max_tokens</code> to prevent runaway responses</li>
+            <li>Stream responses for better perceived performance</li>
+        </ol>
+
+        <h2>Preparing for Public Launch: Cost Controls</h2>
+
+        <p>Before opening this to the public, we need to address the elephant in the room: <strong>What if this goes viral?</strong></p>
+
+        <div class="stat-box">
+            <strong>Current setup (no controls):</strong>
+            <ul>
+                <li>1,000 users × 5 chats = <span class="checkmark">$20/month ✓</span></li>
+                <li>10,000 users × 10 chats = <span class="warning">$400/month ⚠</span></li>
+            </ul>
+        </div>
+
+        <h3>Planned Cost Controls</h3>
+
+        <ol>
+            <li><strong>Rate Limiting</strong> - Per-session limit (10 messages) and global hourly limits</li>
+            <li><strong>OpenAI Budget Caps</strong> - Hard monthly limit in OpenAI dashboard</li>
+            <li><strong>Context Optimization</strong> - Reduce context windows and response lengths (30-40% savings)</li>
+            <li><strong>Response Caching</strong> - Cache common questions for 50% cost reduction at scale</li>
+        </ol>
+
+        <h2>Lessons Learned: Conversational Development</h2>
+
+        <p>This entire project—from zero to production-ready—took approximately <strong>6 hours of conversational development</strong> with Claude. Here's what made that possible:</p>
+
+        <div class="lesson-box">
+            <h3>1. Start with Data</h3>
+            <p>The first 2 hours focused entirely on getting clean, complete data. No UI, no features—just bulletproof data extraction and enrichment. This foundation made everything else trivial.</p>
+
+            <h3>2. Embrace Iteration</h3>
+            <p>The app went through 11 git commits as it evolved. Each iteration added value. None required throwing away previous work.</p>
+
+            <h3>3. Let AI Handle Boilerplate</h3>
+            <p>Claude wrote all the YouTube API integration, OpenAI streaming handlers, and data processing scripts. I focused on what to build and how to evaluate it.</p>
+
+            <h3>4. Build for Real Use Cases</h3>
+            <p>Every feature decision came from asking: "How would a researcher actually use this?" No "wouldn't it be cool if..." features. Only "researchers need to..." features.</p>
+        </div>
+
+        <h2>The Broader Lesson</h2>
+
+        <p>This project exemplifies a new way of building software: <strong>conversational development</strong>. The paradigm shift isn't just that AI writes code faster—it's that you can think out loud and watch your ideas become real.</p>
+
+        <p><strong>Traditional software development:</strong></p>
+        <pre><code>Idea → Spec → Architecture → Implementation → Testing → Deployment
+        (weeks to months)</code></pre>
+
+        <p><strong>Conversational development:</strong></p>
+        <pre><code>Idea → "Let's build this" → Working prototype → Refinements → Deployment
+              (hours to days)</code></pre>
+
+        <p>The key insight: <em>You don't need to know how to implement everything.</em> You need to know what to build and how to evaluate whether it's working. The AI handles the translation from intent to implementation.</p>
+
+        <h2>Final Thoughts</h2>
+
+        <p>When I started this project, I had 17 YouTube video URLs and a question: <em>How can we make this knowledge more accessible?</em></p>
+
+        <p>Six hours later, I had:</p>
+        <ul>
+            <li>A complete data pipeline</li>
+            <li>An AI-powered chat interface</li>
+            <li>Cross-video synthesis capabilities</li>
+            <li>17 publication-quality summaries</li>
+            <li>A cost-optimized architecture ready for public use</li>
+        </ul>
+
+        <p>This is the promise of conversational development: turning ideas into reality at the speed of thought.</p>
+
+        <p>The future of software development isn't about replacing human creativity—it's about amplifying it. Give AI a clear intent and the autonomy to execute, and watch how quickly impossible becomes inevitable.</p>
+
+        <div class="footer">
+            <p><em>Vishal is exploring the intersection of AI and education at the University of Illinois. This article describes a real project built in a single afternoon using Claude Code. All code and data are available in the project repository.</em></p>
+        </div>
+    </article>
+</body>
+</html>
