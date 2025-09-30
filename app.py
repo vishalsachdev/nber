@@ -196,6 +196,10 @@ if mode == "🔍 Search & Browse":
 
                 st.markdown(f"**[🔗 Watch on YouTube]({video['url']})**")
 
+                if video.get('description'):
+                    with st.expander("📄 View Description"):
+                        st.text(video['description'])
+
             with col2:
                 st.metric("Transcript", "✅ Available" if video['has_transcript'] else "❌ Not Available")
                 if video['has_transcript']:
