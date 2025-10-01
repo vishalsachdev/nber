@@ -69,8 +69,11 @@ st.markdown("""
 ### What You Can Do
 
 🔍 **Search & Browse** - Find presentations by topic, presenter, or keyword with AI-generated summaries
+
 💬 **Chat with Video** - Ask questions about specific presentations and get answers grounded in the actual transcript
+
 🌐 **Chat with All** - Query across all 17 presentations to compare perspectives and synthesize insights
+
 👥 **Explore Presenters** - Browse 38 leading economists with direct links to their Google Scholar profiles
 """)
 
