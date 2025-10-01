@@ -9,12 +9,12 @@ The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/e
 - Daron Acemoglu (MIT)
 - Paul Romer (NYU)
 - Joseph Stiglitz (Columbia)
-- And 35+ other leading economists
+- And 30+ other leading economists
 
 **Workshop Coverage:**
 - 17 video presentations
 - 91,733 words of transcribed content
-- 38 presenters from top institutions
+- 34 presenters from top institutions
 - Topics: AI and labor markets, firm dynamics, innovation, competition, public finance, behavioral economics, and policy
 
 ## Features
@@ -25,7 +25,7 @@ The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/e
 
 🌐 **Chat with All** - Ask questions that synthesize information across all workshop presentations
 
-👥 **Presenters Directory** - Browse all 38 presenters with Google Scholar profiles and affiliations
+👥 **Presenters Directory** - Browse all 34 presenters with Google Scholar profiles and affiliations
 
 ## Quick Start
 

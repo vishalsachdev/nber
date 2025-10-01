@@ -32,7 +32,7 @@ Everything started with getting clean transcript data from YouTube. Using the `y
 ### Phase 2: Enrichment (Making Data Meaningful)
 
 Raw transcripts aren't enough—researchers need context. I added:
-- **Presenter metadata**: 38 economists with affiliations and Google Scholar links
+- **Presenter metadata**: 34 economists with affiliations and Google Scholar links
 - **AI-generated summaries**: Using GPT-4o-mini to create 2-3 paragraph abstracts for each video
 
 The summaries cost just $0.012 for all 17 videos (about a penny). For that, every presentation got a publication-quality abstract that makes the search experience dramatically better.
@@ -55,7 +55,7 @@ The ambitious feature: query across all 17 presentations. "Which talks discuss p
 Instead of sending 91K words to the API (expensive!), the system uses AI-generated summaries as context—reducing token usage by 95% while maintaining quality.
 
 **4. Presenters Directory**
-Browse all 38 economists with direct links to their work and see which presentations they contributed to.
+Browse all 34 economists with direct links to their work and see which presentations they contributed to.
 
 ### Phase 4: Polish and Launch Prep
 

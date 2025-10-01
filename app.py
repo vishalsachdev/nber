@@ -76,7 +76,7 @@ st.markdown("""
 
 🌐 **Chat with All** - Query across all 17 presentations to compare perspectives and synthesize insights
 
-👥 **Explore Presenters** - Browse 38 leading economists with direct links to their Google Scholar profiles
+👥 **Explore Presenters** - Browse 34 leading economists with direct links to their Google Scholar profiles
 """)
 
 st.divider()
