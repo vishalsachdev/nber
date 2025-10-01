@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { VideoWithPresenters } from '../lib/api';
 import { chatWithVideo, type ChatMessage } from '../lib/openai';
 
@@ -133,7 +134,9 @@ export default function ChatWithVideo({
 
           {messages.map((message, index) => (
             <div key={index} className={`chat-message ${message.role}`}>
-              <div className="message-content">{message.content}</div>
+              <div className="message-content">
+                <ReactMarkdown>{message.content}</ReactMarkdown>
+              </div>
             </div>
           ))}
           <div ref={messagesEndRef} />

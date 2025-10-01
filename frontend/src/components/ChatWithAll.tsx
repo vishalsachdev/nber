@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { VideoWithPresenters } from '../lib/api';
 import { chatWithAllVideos, type ChatMessage } from '../lib/openai';
 
@@ -29,13 +30,7 @@ export default function ChatWithAll({ videos }: ChatWithAllProps) {
     setMessages(prev => [...prev, assistantMessage]);
 
     try {
-      const videoSummaries = videos.map(video => {
-        const presenters = video.presenters.map(p => p.name).join(', ');
-        const summary = video.ai_summary || video.transcript?.substring(0, 500) || '';
-        return `**${video.title}** by ${presenters}\n${summary}`;
-      });
-
-      const stream = chatWithAllVideos(videoSummaries, [...messages, userMessage]);
+      const stream = chatWithAllVideos(videos, [...messages, userMessage]);
 
       for await (const chunk of stream) {
         assistantMessage.content += chunk;
@@ -86,7 +81,9 @@ export default function ChatWithAll({ videos }: ChatWithAllProps) {
 
           {messages.map((message, index) => (
             <div key={index} className={`chat-message ${message.role}`}>
-              <div className="message-content">{message.content}</div>
+              <div className="message-content">
+                <ReactMarkdown>{message.content}</ReactMarkdown>
+              </div>
             </div>
           ))}
           <div ref={messagesEndRef} />
