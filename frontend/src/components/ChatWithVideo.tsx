@@ -98,7 +98,7 @@ export default function ChatWithVideo({
           <div className="chat-meta">
             <span>
               {selectedVideo.presenters.map((p, i) => (
-                <span key={p.id}>
+                <span key={p.id || i}>
                   {p.scholar_url ? (
                     <a href={p.scholar_url} target="_blank" rel="noopener noreferrer">
                       {p.name}

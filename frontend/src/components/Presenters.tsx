@@ -63,8 +63,8 @@ export default function Presenters() {
       </div>
 
       <div className="presenters-grid">
-        {filteredPresenters.map((presenter) => (
-          <div key={presenter.id} className="presenter-card">
+        {filteredPresenters.map((presenter, idx) => (
+          <div key={presenter.id || idx} className="presenter-card">
             <div className="presenter-header">
               <h3>{presenter.name}</h3>
               {presenter.scholar_url && (

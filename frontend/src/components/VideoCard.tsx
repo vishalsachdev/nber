@@ -11,11 +11,14 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
 
   return (
     <div className="video-card">
-      <div className="video-card-header">
+      <div
+        className="video-card-header"
+        onClick={() => setExpanded(!expanded)}
+        style={{ cursor: 'pointer' }}
+      >
         <h3>{video.title}</h3>
         <button
           className="expand-btn"
-          onClick={() => setExpanded(!expanded)}
           aria-label={expanded ? 'Collapse' : 'Expand'}
         >
           {expanded ? '−' : '+'}
@@ -31,7 +34,7 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
                   📅 {new Date(video.upload_date).toLocaleDateString()}
                 </span>
               )}
-              {video.has_transcript && (
+              {video.has_transcript && video.word_count && (
                 <span className="meta-item">
                   📝 {video.word_count.toLocaleString()} words
                 </span>
@@ -42,8 +45,8 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
               <div className="presenters">
                 <strong>Presenters:</strong>
                 <ul>
-                  {video.presenters.map((presenter) => (
-                    <li key={presenter.id}>
+                  {video.presenters.map((presenter, idx) => (
+                    <li key={presenter.id || idx}>
                       {presenter.scholar_url ? (
                         <a
                           href={presenter.scholar_url}
