@@ -50,14 +50,28 @@ videos = load_videos()
 st.title("🎓 NBER Economics of Transformative AI Workshop")
 st.markdown("*Fall 2025 • Explore presentations, chat with transcripts, and discover insights*")
 
-# Workshop description and link
+# Workshop description and why this app exists
 st.markdown("""
 This workshop brings together leading economists to explore the economic implications of transformative artificial intelligence.
 Organized by Ajay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, the workshop examines how AI will reshape labor markets,
 firm dynamics, innovation, competition, and economic policy.
 
+**Why this app?** Academic workshops are goldmines of cutting-edge research, but incredibly time-consuming to digest.
+Instead of watching hours of video or manually searching through transcripts, you can now **have a conversation** with these presentations.
+Ask questions, compare perspectives across talks, and discover insights in seconds—powered by AI that understands the full context of 91,733 words of content.
+
 **[📺 Watch all presentations on YouTube](https://www.youtube.com/@NBERvideos/videos)** •
 **[📄 Workshop Details (NBER)](https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025)**
+""")
+
+# Feature highlights
+st.markdown("""
+### What You Can Do
+
+🔍 **Search & Browse** - Find presentations by topic, presenter, or keyword with AI-generated summaries
+💬 **Chat with Video** - Ask questions about specific presentations and get answers grounded in the actual transcript
+🌐 **Chat with All** - Query across all 17 presentations to compare perspectives and synthesize insights
+👥 **Explore Presenters** - Browse 38 leading economists with direct links to their Google Scholar profiles
 """)
 
 st.divider()
