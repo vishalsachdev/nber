@@ -42,6 +42,8 @@ if 'selected_video' not in st.session_state:
     st.session_state.selected_video = None
 if 'search_query' not in st.session_state:
     st.session_state.search_query = ""
+if 'show_chat_message' not in st.session_state:
+    st.session_state.show_chat_message = False
 
 client = get_openai_client()
 videos = load_videos()
@@ -91,6 +93,11 @@ with col4:
     st.metric("💬 Q&A", "Available")
 
 st.divider()
+
+# Show success message if video was just selected
+if st.session_state.show_chat_message:
+    st.success("✅ Video selected! Switch to the **'💬 Chat with Video'** tab to start chatting.")
+    st.session_state.show_chat_message = False
 
 # Main navigation using tabs
 tab1, tab2, tab3, tab4 = st.tabs([
@@ -285,7 +292,7 @@ with tab1:
                     if st.button("💬 Start Chat", key=f"chat_{video['id']}"):
                         st.session_state.selected_video = video
                         st.session_state.messages = []
-                        st.success("✅ Video selected! Switch to the **'💬 Chat with Video'** tab above to start chatting.")
+                        st.session_state.show_chat_message = True
                         st.rerun()
 
 with tab2:
