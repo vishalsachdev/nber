@@ -249,41 +249,31 @@
     "presenters": [
       {
         "name": "Peyman Shahidi",
-        "affiliation": "Massachusetts Institute of Technology"
+        "affiliation": "Massachusetts Institute of Technology",
+        "scholar_url": "https://scholar.google.com/citations?user=7wK6ZXEAAAAJ"
       },
       {
         "name": "Gili Rusak",
-        "affiliation": "Harvard University"
+        "affiliation": "Harvard University",
+        "scholar_url": "https://scholar.google.com/citations?user=xhJqMBsAAAAJ"
       },
       {
         "name": "Benjamin S. Manning",
         "affiliation": "Massachusetts Institute of Technology",
-        "scholar_url": "https://scholar.google.com/citations?user=teSF3_AAAAAJ"
+        "scholar_url": "https://scholar.google.com/citations?user=-gjxfJgAAAAJ"
       },
       {
         "name": "Andrey Fradkin",
         "affiliation": "Boston University",
-        "scholar_url": "https://scholar.google.com/citations?user=5qkgRKsAAAAJ"
+        "scholar_url": "https://scholar.google.com/citations?user=gNq8wdkAAAAJ"
       },
       {
         "name": "John J. Horton",
         "affiliation": "Massachusetts Institute of Technology and NBER",
-        "scholar_url": "https://scholar.google.com/citations?user=L_O2kH0AAAAJ"
-      },
-      {
-        "name": "The Coasean Singularity? Demand",
-        "affiliation": "Supply, and Market Design with AI Agents"
-      },
-      {
-        "name": "Economics of Transformative AI Workshop",
-        "affiliation": "Fall 2025"
-      },
-      {
-        "name": "September 18-19",
-        "affiliation": "2025"
+        "scholar_url": "https://scholar.google.com/citations?user=RGWsHCoAAAAJ"
       }
     ],
-    "num_presenters": 8,
+    "num_presenters": 5,
     "description": "https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025\nPresented by: \nPeyman Shahidi, Massachusetts Institute of Technology\nGili Rusak, Harvard University\nBenjamin S. Manning, Massachusetts Institute of Technology\nAndrey Fradkin, Boston University\nJohn J. Horton, Massachusetts Institute of Technology and NBER\nThe Coasean Singularity? Demand, Supply, and Market Design with AI Agents\nEconomics of Transformative AI Workshop, Fall 2025\nAjay K. Agrawal, Anton Korinek, and Erik Brynjolfsson, Organizers\nSeptember 18-19, 2025\nSupported by the Alfred P. Sloan Foundation grant #G-2023-19618 and Microsoft",
     "ai_summary": "The presentation titled \"The Coasean Singularity? Demand, Supply, and AI\" by Peyman Shahidi and colleagues explores the implications of transformative AI on everyday market transactions, using the example of purchasing a barbecue grill. The research focuses on how AI can reduce transaction costs associated with market interactions, such as price discovery and preference expression. The authors argue that as AI capabilities improve, the efficiency with which consumers can articulate their preferences and execute transactions will also enhance, potentially leading to a significant shift in how consumers engage with markets.\n\nKey findings suggest that AI agents could play a dual role in market interactions: they may either replace human involvement in certain tasks or augment existing processes by assisting consumers in making informed decisions. The paper posits that demand for AI agents will likely grow as their costs decrease and capabilities expand, especially in high-stakes environments where evaluating numerous options is challenging. The authors also discuss the potential for different types of AI agents, including \"bring your own\" agents versus platform-provided agents, and the implications of these configurations for competition and market dynamics.\n\nThe implications of this research are significant for both economists and policymakers. As AI becomes more integrated into everyday transactions, it could reshape market structures and consumer behavior, necessitating new regulatory frameworks to manage the interaction between human and AI agents. The authors emphasize the need for further research and development to address the complexities of preference learning and authority delegation in AI systems, which will be crucial for realizing the full potential of AI in enhancing market efficiency and consumer welfare.",
     "upload_date": "2025-09-29",
