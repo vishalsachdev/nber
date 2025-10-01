@@ -77,7 +77,7 @@ function App() {
       <Header
         videosCount={videos.length}
         transcriptsCount={videos.filter(v => v.has_transcript).length}
-        presentersCount={videos.reduce((sum, v) => sum + v.presenters.length, 0)}
+        presentersCount={34}
       />
 
       <nav className="tabs">
