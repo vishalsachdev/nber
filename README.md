@@ -2,6 +2,8 @@
 
 An interactive AI-powered tool for exploring presentations from the NBER Economics of Transformative AI Workshop (Fall 2025). Search through 17 presentations, chat with video transcripts using AI, and discover insights from leading economists on how transformative AI will reshape labor markets, innovation, competition, and economic policy.
 
+**🌐 Live Demo (React)**: https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app
+
 ## About the Workshop
 
 The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025) brings together leading economists to explore the economic implications of transformative artificial intelligence. Organized by Ajay K. Agrawal (University of Toronto), Anton Korinek (University of Virginia), and Erik Brynjolfsson (Stanford), the workshop features presentations from luminaries including:
