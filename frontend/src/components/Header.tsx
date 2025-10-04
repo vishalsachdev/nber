@@ -32,6 +32,22 @@ export default function Header({ videosCount, transcriptsCount, presentersCount 
             <a href="https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025" target="_blank" rel="noopener noreferrer">
               📄 Workshop Details (NBER)
             </a>
+            <span>•</span>
+            <a
+              href="https://github.com/vishalsachdev/nber/issues/new/choose"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              🐞 Open a GitHub issue
+            </a>
+            <span>•</span>
+            <a
+              href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7380332000815202304/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ✍️ Build write-up
+            </a>
           </div>
         </div>
 
