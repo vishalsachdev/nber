@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When the Hook Doesn't Fire: Debugging Session Logs and Discovering Free AI APIs - The Hybrid Builder</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            font-size: 2em;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3em;
+        }
+        h3 {
+            font-size: 1.25em;
+            margin-top: 1.25em;
+            margin-bottom: 0.5em;
+        }
+        p {
+            margin: 1em 0;
+        }
+        code {
+            background-color: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        ul, ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+        li {
+            margin: 0.5em 0;
+        }
+        strong {
+            font-weight: 600;
+        }
+        em {
+            font-style: italic;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #eee;
+            margin: 2em 0;
+        }
+        .metadata {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 2em;
+        }
+        .footer {
+            margin-top: 3em;
+            padding-top: 2em;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-style: italic;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>When the Hook Doesn't Fire: Debugging Session Logs and Discovering Free AI APIs</h1>
+
+    <div class="metadata">
+        <p><strong>Project:</strong> NBER Economics of Transformative AI Workshop Explorer<br>
+        <strong>Date:</strong> October 4, 2025<br>
+        <strong>Topics:</strong> Developer tooling, API migrations, collaborative debugging</p>
+    </div>
+
+    <hr>
+
+    <h2>The Setup: Newsletter Infrastructure That Wasn't Working</h2>
+
+    <p>Three days ago, I set up what seemed like an elegant solution for documenting my AI collaboration sessions. I created a Python hook script (<code>/Users/vishal/.claude/hooks/export-session.py</code>) that would automatically run whenever I exited a Claude Code session, exporting a condensed version of our conversation—full user questions, summarized AI responses, timestamps—into a markdown file under <code>articles/chat-sessions/</code>.</p>
+
+    <p>The hook script itself was solid: 113 lines of Python that would read the session transcript JSON, extract the key information, and save it in a format perfect for later newsletter writing. The <code>CLAUDE.md</code> file in my global config even documented this workflow explicitly:</p>
+
+    <pre><code>### Chat Session Data Sources
+- **Automatic export enabled**: SessionEnd hook exports sessions to `/articles/chat-sessions/`
+- **Export format**: Markdown with user questions (full) + AI response summaries (150 chars) + timestamps</code></pre>
+
+    <p>There was just one problem: <strong>it never actually ran</strong>.</p>
+
+    <p>I exited sessions. Nothing appeared in <code>articles/chat-sessions/</code>. I checked the hook script—it was executable, properly formatted, sitting right where it should be in <code>/Users/vishal/.claude/hooks/</code>. I even had a <code>README.md</code> in that same hooks directory with complete setup instructions showing exactly how to configure it in Claude Code's <code>settings.json</code>.</p>
+
+    <p>But when I started a fresh session today and asked Claude to check why the hook wasn't firing, we discovered something embarrassing: <strong>the hook was never configured in the first place</strong>.</p>
+
+    <h2>The Five-Minute Fix</h2>
+
+    <p>The diagnosis took seconds once we looked in the right place. Claude checked <code>/Users/vishal/.claude/settings.json</code>:</p>
+
+    <pre><code>{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "alwaysThinkingEnabled": false,
+  "feedbackSurveyState": {
+    "lastShownTime": 1754086158200
+  }
+}</code></pre>
+
+    <p>No <code>hooks</code> configuration. At all.</p>
+
+    <p>I'd created the hook script, written the documentation, added it to my <code>CLAUDE.md</code> instructions, but never actually <em>registered</em> it in Claude Code's settings. The fix was literally adding these lines:</p>
+
+    <pre><code>"hooks": {
+  "SessionEnd": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "/Users/vishal/.claude/hooks/export-session.py"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+    <p>That's it. One Edit tool call at line 7 of <code>settings.json</code>, and suddenly my newsletter infrastructure was live. Future sessions would automatically export their conversations to markdown.</p>
+
+    <p>This is the kind of bug that feels stupid in retrospect but teaches an important lesson: <strong>automation only works if you actually enable it</strong>. I'd done everything <em>around</em> the hook—created the script, made it executable, documented the workflow—but missed the one step that made it functional.</p>
+
+    <h2>The Real Story: A Three-Day API Migration Journey</h2>
+
+    <p>But that quick debugging session was just the bookend to a much more interesting development story. When Claude asked if I wanted to write a newsletter article, I said yes, and we started reconstructing what had happened over the past few days by looking at the git history.</p>
+
+    <p>The timeline told the story of an evolution from a local Python prototype to a production-ready React application, culminating in an API migration that solved a critical cost problem.</p>
+
+    <h3>September 30: Birth of the NBER Explorer</h3>
+
+    <p>The project started as a single-day sprint. I wanted to explore the NBER Economics of Transformative AI Workshop videos—17 presentations from economists like Daron Acemoglu, Paul Romer, and Joseph Stiglitz discussing how transformative AI would reshape labor markets, innovation, and economic policy.</p>
+
+    <p>The data pipeline came together in a few hours:</p>
+    <ul>
+        <li><code>extract_transcripts.py</code> pulled YouTube transcripts using the youtube-transcript-api</li>
+        <li><code>generate_summaries.py</code> created 2-3 paragraph AI summaries of each presentation using OpenAI's GPT-4o-mini</li>
+        <li><code>app.py</code> built a Streamlit interface with search, single-video chat, cross-video chat, and a presenter directory</li>
+    </ul>
+
+    <p>By the end of the day, I had a working prototype with all 17 videos, 91,733 words of transcribed content, and AI-powered chat features. The git log shows this compressed development cycle:</p>
+
+    <pre><code>2025-09-30 07:30 - Add NBER video transcript extraction tools
+2025-09-30 08:14 - Add Streamlit app for interactive transcript exploration
+2025-09-30 08:19 - Add AI-generated summaries for all presentations
+2025-09-30 08:22 - Add 'Chat with All Transcripts' mode
+2025-09-30 16:30 - Complete project with all 17 transcripts and production-ready features</code></pre>
+
+    <p>Nine hours from initial commit to production-ready. The velocity was exhilarating, but it came with a catch: <strong>the app ran on OpenAI's API</strong>, which meant every chat interaction cost money. Not much—about $0.003-0.005 per message with GPT-4o-mini—but enough that deploying it publicly would require rate limiting, budget caps, and careful cost monitoring.</p>
+
+    <h3>September 30-October 1: The React Migration</h3>
+
+    <p>The same day, I started rebuilding the app in React. Why? Streamlit is fantastic for rapid prototyping but less ideal for production deployments where you want fine-grained control over user interactions, caching, and cost management.</p>
+
+    <p>The bolt branch (which became the main development branch) shows this transition:</p>
+
+    <pre><code>2025-09-30 23:53 - Clean up bolt branch: remove Streamlit-specific files
+2025-10-01 00:13 - Fix Google Scholar URLs and add markdown rendering to chat
+2025-10-01 00:49 - Improve UI and fix presenter count in React frontend
+2025-10-01 00:59 - Add Vercel deployment config and fix TypeScript errors
+2025-10-01 22:12 - Add live demo URL to README</code></pre>
+
+    <p>By October 1st, I had a live React app deployed on Vercel at <code>https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app</code>. The UI was cleaner, the chat interface supported markdown rendering for better formatting, and the whole thing was production-ready.</p>
+
+    <p>Except for one problem: <strong>it was still using OpenAI's API</strong>, which meant the cost concern remained.</p>
+
+    <h3>October 4: The UIUC Chat API Discovery</h3>
+
+    <p>This morning's session started with a simple request: "write article." But before we could write about the project, Claude needed to understand what had changed since the last documented version.</p>
+
+    <p>That's when we looked at the most recent commit:</p>
+
+    <pre><code>374c48c (HEAD -> bolt) Add UIUC Chat API integration with Vercel proxy</code></pre>
+
+    <p>Wait—UIUC Chat API? That wasn't in the original design. I looked at the commit details:</p>
+
+    <pre><code>Add UIUC Chat API integration with Vercel proxy
+
+- Create Vercel Edge Function to proxy UIUC Chat API
+- Update frontend to use /api/chat endpoint
+- Configure Vite dev proxy for local development
+- Replace OpenRouter with UIUC Chat API (Qwen2.5-VL-72B)
+- Fix CORS issues for production deployment
+- Update streaming parser for plain text chunks</code></pre>
+
+    <p>This was a complete API migration. I'd replaced OpenAI entirely with the <a href="https://uiuc.chat/">UIUC Chat API</a>, which provides free access to powerful language models (in this case, Qwen2.5-VL-72B, a 72-billion-parameter vision-language model).</p>
+
+    <p>The implementation was elegant. Instead of calling OpenAI directly from the frontend, I created a Vercel Edge Function at <code>frontend/api/chat.ts</code>:</p>
+
+    <pre><code>// Vercel Serverless Function to proxy UIUC Chat API
+// This avoids CORS issues in production
+
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req: Request) {
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  try {
+    const body = await req.json();
+
+    // Forward the request to UIUC Chat API
+    const response = await fetch('https://uiuc.chat/api/chat-api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      return new Response(response.statusText, { status: response.status });
+    }
+
+    // Return the streaming response
+    return new Response(response.body, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
+  } catch (error) {
+    console.error('API proxy error:', error);
+    return new Response('Internal server error', { status: 500 });
+  }
+}</code></pre>
+
+    <p>This solved two problems at once:</p>
+    <ol>
+        <li><strong>CORS issues</strong>: By proxying the UIUC API through Vercel's serverless function, I avoided cross-origin restrictions that would have blocked direct browser calls</li>
+        <li><strong>Cost</strong>: The UIUC Chat API is free for academic and research use, which perfectly aligns with this NBER workshop explorer</li>
+    </ol>
+
+    <p>For local development, I configured Vite to proxy the <code>/api/chat</code> endpoint to the UIUC API, so the same code works in both dev and production.</p>
+
+    <h2>The Technical Shift: From OpenAI to Open Models</h2>
+
+    <p>The migration from OpenAI to UIUC Chat represents a broader trend I've been tracking: <strong>the democratization of powerful AI models through free academic APIs</strong>.</p>
+
+    <p>When I started this project on September 30th, my default was OpenAI. GPT-4o-mini is inexpensive ($0.15 per million input tokens, $0.60 per million output tokens) and reliable. But "inexpensive" still means <em>costs money</em>, which creates friction for public deployment.</p>
+
+    <p>The UIUC Chat API removes that friction entirely. Qwen2.5-VL-72B is a capable model—72 billion parameters, multimodal vision-language support, strong performance on reasoning tasks—and it's available for free through UIUC's infrastructure.</p>
+
+    <p>This isn't just a cost optimization. It's a <strong>philosophical shift</strong> in how I think about building AI-powered applications:</p>
+
+    <h3>Before (OpenAI approach):</h3>
+    <ul>
+        <li>Default to commercial APIs</li>
+        <li>Implement rate limiting to control costs</li>
+        <li>Add budget monitoring and caps</li>
+        <li>Worry about unexpected traffic spikes</li>
+        <li>Limit features to stay within budget</li>
+    </ul>
+
+    <h3>After (UIUC Chat approach):</h3>
+    <ul>
+        <li>Default to free academic APIs when available</li>
+        <li>Focus on user experience instead of cost</li>
+        <li>Enable features without financial constraints</li>
+        <li>Contribute back to academic infrastructure</li>
+        <li>Reserve commercial APIs for use cases that truly need them</li>
+    </ul>
+
+    <p>The UIUC Chat API isn't perfect—response quality varies by model, uptime isn't guaranteed, and there's no SLA for production use. But for an academic research tool exploring NBER workshop presentations, it's a perfect fit.</p>
+
+    <h2>What This Means for the Hybrid Builder Paradigm</h2>
+
+    <p>This three-day arc—from Streamlit prototype to React production app to free API migration—illustrates something fundamental about AI-assisted development: <strong>the bottleneck shifts from implementation to discovery</strong>.</p>
+
+    <p>Claude and I didn't spend hours debugging TypeScript errors or wrestling with CORS policies. We spent our time <em>discovering better solutions</em>:</p>
+    <ul>
+        <li>"What if we migrate to React for better production deployment?"</li>
+        <li>"How can we reduce API costs for public use?"</li>
+        <li>"Is there a free academic API that fits this use case?"</li>
+    </ul>
+
+    <p>The actual <em>implementation</em> of each solution—writing the Vercel Edge Function, configuring the Vite proxy, updating the frontend chat component—took minutes. The discovery and decision-making took longer.</p>
+
+    <p>This is the pattern I keep seeing in my Claude Code sessions: <strong>rapid iteration through solution spaces</strong>. We're not slowly building one thing; we're quickly trying several things and keeping what works.</p>
+
+    <p>The hook debugging at the start of this session is a perfect microcosm: we identified the problem (missing config), implemented the fix (one JSON edit), and moved on to the next task (writing this article) in under five minutes. No StackOverflow searching, no trial-and-error with different hook configurations, no reading through Claude Code documentation PDFs.</p>
+
+    <h2>The Newsletter Infrastructure That Now Works</h2>
+
+    <p>By the time you're reading this, the SessionEnd hook I debugged at the start of today's session will be capturing every conversation I have with Claude Code in this project.</p>
+
+    <p>Each exported session becomes source material for future articles:</p>
+    <ul>
+        <li>Chronological narrative of collaboration</li>
+        <li>Key questions and decisions made</li>
+        <li>Timeline of development process</li>
+        <li>Behind-the-scenes problem-solving</li>
+    </ul>
+
+    <p>The hook exports to <code>articles/chat-sessions/YYYY-MM-DD-HHMMSS-session.md</code> with this format:</p>
+
+    <pre><code># Chat Session Export
+
+**Project:** nber
+**Session ID:** abc123
+**Working Directory:** /Users/vishal/Desktop/nber
+**End Reason:** user_exit
+**Exported:** 2025-10-04T12:30:00
+
+---
+
+### [12:16:45] User
+i just exited the previous session and the hook that activates when i exit did not work to create a log. check
+
+### [12:16:52] Assistant
+*I'll check the hook configuration and the chat-sessions directory to diagnose the issue...*
+
+### [12:18:30] User
+write article
+
+### [12:18:35] Assistant
+*Reading exported chat session logs, reviewing git history, and analyzing the UIUC API migration work...*</code></pre>
+
+    <p>This condensed format makes it easy to review past sessions without drowning in 10,000-word conversation transcripts. Full user questions, summarized AI responses, timestamps for narrative flow.</p>
+
+    <p>And now that it's properly configured, it runs automatically. No manual export, no copy-pasting conversation history, no trying to remember what we discussed three sessions ago.</p>
+
+    <h2>Reflections on Free AI Infrastructure</h2>
+
+    <p>The UIUC Chat API migration raises an interesting question about the future of AI application development: <strong>how much of the AI application stack will become free?</strong></p>
+
+    <p>A few years ago, the answer was "none of it." OpenAI's API was the only game in town, and you paid per token. Then came open-source models like LLaMA, which you could run locally if you had the hardware. Now we're seeing a third category: <strong>free hosted APIs for academic and research use</strong>.</p>
+
+    <p>UIUC Chat isn't unique. There's Hugging Face Inference API (free tier), Together AI (research credits), Replicate (pay-as-you-go with free trials), and university-hosted endpoints like Stanford's Alpaca.</p>
+
+    <p>For projects like this NBER workshop explorer—academic research tools, educational applications, non-commercial experiments—these free APIs are transformative. They remove the financial barrier between "interesting idea" and "live deployment."</p>
+
+    <p>The tradeoff is reliability. Commercial APIs come with SLAs, guaranteed uptime, dedicated support. Academic APIs come with "best effort" hosting and community support. But for many use cases, that's perfectly acceptable.</p>
+
+    <p>I suspect we'll see more projects defaulting to free academic APIs for MVP deployment, then migrating to commercial APIs only when they need production-grade reliability or scale beyond academic use cases.</p>
+
+    <h2>What's Next</h2>
+
+    <p>The NBER explorer is now live at <code>https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app</code> with:</p>
+    <ul>
+        <li>17 workshop presentations fully transcribed and searchable</li>
+        <li>AI chat powered by Qwen2.5-VL-72B through UIUC Chat API (free)</li>
+        <li>Clean React UI with markdown rendering</li>
+        <li>Presenter directory with Google Scholar links</li>
+        <li>Cross-video synthesis for asking questions across all presentations</li>
+    </ul>
+
+    <p>The SessionEnd hook is now properly configured and will capture future development sessions.</p>
+
+    <p>And I'm left thinking about the broader implications of this three-day journey: from prototype to production, from paid API to free alternative, from broken automation to working infrastructure.</p>
+
+    <p>The future of development isn't just "AI helps you write code faster." It's "AI helps you discover better solutions, implement them rapidly, and iterate through possibilities at conversational speed."</p>
+
+    <p>And sometimes, it also helps you realize you forgot to add six lines of JSON to your settings file.</p>
+
+    <hr>
+
+    <div class="footer">
+        <p>This article documents the development of the <a href="https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app">NBER Economics of Transformative AI Workshop Explorer</a>, built collaboratively with Claude Code from September 30 to October 4, 2025.</p>
+        <p>Repository: <a href="https://github.com/vishalsachdev/nber">github.com/vishalsachdev/nber</a></p>
+        <p>Previous article: <a href="2025-09-30-nber-ai-workshop-explorer.md">From 404 to Production: Building an AI-Powered NBER Workshop Explorer in One Day</a></p>
+    </div>
+</body>
+</html>
