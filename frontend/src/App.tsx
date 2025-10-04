@@ -140,7 +140,7 @@ function App() {
       <footer className="footer">
         <div className="footer-content">
           <span>🏛️ NBER Workshop Fall 2025</span>
-          <span>🤖 Powered by OpenAI GPT-4o-mini</span>
+          <span>🤖 Powered by UIUC Chat (Qwen2.5-VL-72B)</span>
           <span>⚡ Built with React + Vite</span>
         </div>
       </footer>
