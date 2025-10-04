@@ -1,0 +1,162 @@
+{
+  "last_updated": "2025-09-30",
+  "total_videos": 17,
+  "videos_with_transcripts": 17,
+  "videos_needing_check": 0,
+  "videos": [
+    {
+      "id": "-K2Aek8qxh8",
+      "title": "Algorithms as A Vehicle to Reflective Equilibrium",
+      "url": "https://www.youtube.com/watch?v=-K2Aek8qxh8",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 6075,
+      "needs_recheck": false
+    },
+    {
+      "id": "64F1sfm5kGI",
+      "title": "AI Exposure and the Adaptive Capacity of American",
+      "url": "https://www.youtube.com/watch?v=64F1sfm5kGI",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 4327,
+      "needs_recheck": false
+    },
+    {
+      "id": "i2qpFggisxI",
+      "title": "Public Finance in the Age of AI: A Primer",
+      "url": "https://www.youtube.com/watch?v=i2qpFggisxI",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5745,
+      "needs_recheck": false
+    },
+    {
+      "id": "06kDdPboRMg",
+      "title": "Transformative AI and Firms",
+      "url": "https://www.youtube.com/watch?v=06kDdPboRMg",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5989,
+      "needs_recheck": false
+    },
+    {
+      "id": "kE4JQN-vwjM",
+      "title": "An Economy of AI Agents",
+      "url": "https://www.youtube.com/watch?v=kE4JQN-vwjM",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5950,
+      "needs_recheck": false
+    },
+    {
+      "id": "ttSnUiZILoA",
+      "title": "What Is There to Fear in a Post AGI World",
+      "url": "https://www.youtube.com/watch?v=ttSnUiZILoA",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 4845,
+      "needs_recheck": false
+    },
+    {
+      "id": "eP3ic8EOv6w",
+      "title": "We Won't Be Missed: Work and Growth in the Era of",
+      "url": "https://www.youtube.com/watch?v=eP3ic8EOv6w",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 6278,
+      "needs_recheck": false
+    },
+    {
+      "id": "_xTeQgbAPZs",
+      "title": "The Impact of AI and Digital Platforms",
+      "url": "https://www.youtube.com/watch?v=_xTeQgbAPZs",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 4076,
+      "needs_recheck": false
+    },
+    {
+      "id": "9VJ4oFWk1SE",
+      "title": "The Coasean Singularity? Demand, Supply, and",
+      "url": "https://www.youtube.com/watch?v=9VJ4oFWk1SE",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 6058,
+      "needs_recheck": false
+    },
+    {
+      "id": "PB7zI4Xh_So",
+      "title": "How Much Should We Spend to Reduce A.I.'s",
+      "url": "https://www.youtube.com/watch?v=PB7zI4Xh_So",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5442,
+      "needs_recheck": false
+    },
+    {
+      "id": "G5teYbovYJ0",
+      "title": "Artificial Intelligence in Research and Development",
+      "url": "https://www.youtube.com/watch?v=G5teYbovYJ0",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 7581,
+      "needs_recheck": false
+    },
+    {
+      "id": "by7k-H7sZ8A",
+      "title": "Genius on Demand: The Value of Transformative",
+      "url": "https://www.youtube.com/watch?v=by7k-H7sZ8A",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 7703,
+      "needs_recheck": false
+    },
+    {
+      "id": "SDU2oldSxqU",
+      "title": "Economics of Transformative AI Workshop, Fall 2025 - Welcome",
+      "url": "https://www.youtube.com/watch?v=SDU2oldSxqU",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 1064,
+      "needs_recheck": false
+    },
+    {
+      "id": "HCLAJhYurEY",
+      "title": "Making AI Count: The Next Measurement Frontier?",
+      "url": "https://www.youtube.com/watch?v=HCLAJhYurEY",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5133,
+      "needs_recheck": false
+    },
+    {
+      "id": "ifdSUKrJxqM",
+      "title": "Artificial Intelligence, Competition, and Welfare",
+      "url": "https://www.youtube.com/watch?v=ifdSUKrJxqM",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5626,
+      "needs_recheck": false
+    },
+    {
+      "id": "FBdf9Y70fMg",
+      "title": "AI's Use of Knowledge in Society",
+      "url": "https://www.youtube.com/watch?v=FBdf9Y70fMg",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 4080,
+      "needs_recheck": false
+    },
+    {
+      "id": "6MSSvxDz06o",
+      "title": "Science in the Age of Algorithms",
+      "url": "https://www.youtube.com/watch?v=6MSSvxDz06o",
+      "status": "completed",
+      "has_transcript": true,
+      "word_count": 5761,
+      "needs_recheck": false
+    }
+  ],
+  "videos_to_recheck": []
+}
