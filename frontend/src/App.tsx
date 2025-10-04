@@ -142,6 +142,26 @@ function App() {
           <span>🏛️ NBER Workshop Fall 2025</span>
           <span>🤖 Powered by UIUC Chat (Qwen2.5-VL-72B)</span>
           <span>⚡ Built with React + Vite</span>
+          <span>
+            🐞 Feedback?{' '}
+            <a
+              href="https://github.com/vishalsachdev/nber/issues/new/choose"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open an issue
+            </a>
+          </span>
+          <span>
+            ✍️ Build write-up:{' '}
+            <a
+              href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7380332000815202304/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn article
+            </a>
+          </span>
         </div>
       </footer>
     </div>
