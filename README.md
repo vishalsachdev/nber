@@ -2,7 +2,7 @@
 
 An interactive AI-powered tool for exploring presentations from the NBER Economics of Transformative AI Workshop (Fall 2025). Search through 17 presentations, chat with video transcripts using AI, and discover insights from leading economists on how transformative AI will reshape labor markets, innovation, competition, and economic policy.
 
-**🌐 Live Demo (React)**: https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app
+**🌐 Live Demo**: https://nber2025.vercel.app
 
 ## About the Workshop
 
