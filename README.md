@@ -49,20 +49,20 @@ The app will open at `http://localhost:5173`.
 
 ### Data Extraction Scripts
 
-All scripts use [uv](https://docs.astral.sh/uv/) for dependency management:
+All scripts use [uv](https://docs.astral.sh/uv/) for dependency management and are located in the `scripts/` folder:
 
 ```bash
 # Extract transcripts for new videos
-uv run python extract_transcripts.py
+uv run python scripts/extract_transcripts.py
 
 # Retry missing transcripts (after 24-48 hours)
-uv run python recheck_missing_transcripts.py
+uv run python scripts/recheck_missing_transcripts.py
 
 # Generate AI summaries for all videos
-uv run python generate_summaries.py
+uv run python scripts/generate_summaries.py
 
 # Analyze presenter statistics
-uv run python analyze_presenters.py
+uv run python scripts/analyze_presenters.py
 ```
 
 ## Project Structure
@@ -73,13 +73,17 @@ uv run python analyze_presenters.py
 │   ├── src/                        # React components and logic
 │   ├── api/chat.ts                 # Vercel Edge Function for UIUC Chat API proxy
 │   └── package.json                # Frontend dependencies
-├── extract_transcripts.py           # YouTube transcript extraction
-├── recheck_missing_transcripts.py   # Retry logic for missing transcripts
-├── generate_summaries.py            # AI summary generation
-├── analyze_presenters.py            # Interactive presenter analysis CLI
+├── scripts/                         # Python data extraction utilities
+│   ├── extract_transcripts.py      # YouTube transcript extraction
+│   ├── recheck_missing_transcripts.py  # Retry logic for missing transcripts
+│   ├── generate_summaries.py       # AI summary generation
+│   ├── analyze_presenters.py       # Interactive presenter analysis CLI
+│   ├── fix_scholar_urls.py         # Scholar URL cleanup utility
+│   └── import_data.py              # Supabase data import script
 ├── nber_videos_transcripts.json     # Complete dataset (17 videos, full metadata)
 ├── CLAUDE.md                        # Codebase guide for AI assistants
 └── articles/                        # Development documentation
+    └── chat-sessions/               # Exported chat sessions for newsletter writing
 ```
 
 ## Data Files
@@ -141,9 +145,9 @@ uv add --dev pytest
 ## Notes
 
 - YouTube transcripts may not be immediately available for newly uploaded videos
-- Video IDs can change on YouTube - use `recheck_missing_transcripts.py` to update
-- OpenAI API key required for chat and summary features
-- Streamlit caches loaded data - refresh browser to see updated JSON
+- Video IDs can change on YouTube - use `scripts/recheck_missing_transcripts.py` to update
+- UIUC Chat API credentials required for chat features (free for academic use)
+- Frontend uses Vercel Edge Functions to proxy API requests
 
 ## Links
 

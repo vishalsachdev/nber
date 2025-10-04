@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-NBER Video Transcript Extraction and Explorer - A two-part system for extracting YouTube transcripts from NBER Economics of Transformative AI Workshop videos and providing an interactive Streamlit interface for searching and chatting with the content using OpenAI.
+NBER Video Transcript Extraction and Explorer - A system for extracting YouTube transcripts from NBER Economics of Transformative AI Workshop videos and providing an interactive React web interface for searching and chatting with the content using UIUC Chat API (Qwen2.5-VL-72B).
 
 ## Core Commands
 
@@ -21,28 +21,36 @@ uv add --dev pytest
 ```
 
 ### Running Scripts
-All Python scripts MUST be run with `uv run` for proper environment isolation:
+All Python scripts are located in `scripts/` and MUST be run with `uv run`:
 
 ```bash
 # Extract transcripts for videos (edit video IDs in script first)
-uv run python extract_transcripts.py
+uv run python scripts/extract_transcripts.py
 
 # Retry fetching transcripts that were unavailable (wait 24-48 hours after first attempt)
-uv run python recheck_missing_transcripts.py
+uv run python scripts/recheck_missing_transcripts.py
 
 # Generate AI summaries for all videos with transcripts
-uv run python generate_summaries.py
+uv run python scripts/generate_summaries.py
 
 # Interactive presenter analysis and search
-uv run python analyze_presenters.py
+uv run python scripts/analyze_presenters.py
 
-# Run Streamlit web app
-uv run streamlit run app.py
+# Import data to Supabase
+uv run python scripts/import_data.py
+```
+
+### Running Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# Opens at http://localhost:5173
 ```
 
 ## Architecture
 
-### Data Pipeline
+### Data Pipeline (Python Scripts in `/scripts`)
 1. **extract_transcripts.py**: Initial extraction of video transcripts
    - Hardcoded list of video IDs to process
    - Uses youtube-transcript-api to fetch transcripts
@@ -55,7 +63,7 @@ uv run streamlit run app.py
 
 3. **generate_summaries.py**: AI-powered summarization
    - Reads transcripts from `nber_videos_transcripts.json`
-   - Generates 2-3 paragraph summaries using OpenAI GPT-4o-mini
+   - Generates 2-3 paragraph summaries using UIUC Chat API
    - Adds `ai_summary` field to each video in JSON (positioned after `description`)
    - Limits transcript input to ~12k chars to stay within token limits
 
@@ -63,26 +71,30 @@ uv run streamlit run app.py
    - Query and analyze presenter data from JSON
    - Search by name/affiliation, export to CSV, view statistics
 
-### Web Application (app.py)
-Streamlit-based interface with four main sections:
+5. **import_data.py**: Supabase data import
+   - Imports video data from JSON to Supabase database
+   - One-time setup script for database initialization
 
-1. **Search & Browse Tab**:
+### Web Application (React Frontend in `/frontend`)
+React + TypeScript application with four main features:
+
+1. **Search & Browse**:
    - Full-text search across titles, presenters, transcript content
    - Displays video cards with metadata, presenter info, AI summaries
    - "Start Chat" button switches to Chat tab with selected video
 
-2. **Chat with Video Tab**:
+2. **Chat with Video**:
    - Single-video chat mode with transcript context
    - Context limited to first 15k chars of transcript
-   - Uses GPT-4o-mini with streaming responses
+   - Uses UIUC Chat API (Qwen2.5-VL-72B) with streaming responses
    - Session state maintains conversation history
 
-3. **Chat with All Tab**:
+3. **Chat with All**:
    - Cross-presentation querying using AI summaries
    - Provides context from up to 10 video summaries
    - Synthesizes information across workshop presentations
 
-4. **Presenters Tab**:
+4. **Presenters Directory**:
    - Directory of all presenters with affiliations
    - Google Scholar profile links
    - Shows all videos per presenter
@@ -128,20 +140,22 @@ The app validates credentials at startup and stops with error if missing (app.py
 - Model: `Qwen/Qwen2.5-VL-72B-Instruct`
 - Provider: UIUC.chat (self-hosted LLM)
 - Endpoint: `https://uiuc.chat/api/chat-api/chat`
-- Cost: Uses your hosted infrastructure
+- Proxied through: Vercel Edge Function at `/frontend/api/chat.ts`
+- Cost: Free for academic use
 - Temperature: 0.7 for balanced creativity
 - Streaming enabled for better UX
 
 ### Session State Management
-Streamlit session state tracks:
-- `messages`: Chat conversation history
-- `selected_video`: Currently selected video for single-video chat
-- `search_query`: Current search query text
+React state management tracks:
+- `messages`: Chat conversation history (stored in component state)
+- `selectedVideo`: Currently selected video for single-video chat
+- `searchQuery`: Current search query text
+- Data fetched from Supabase on initial load
 
 ### Context Window Management
-- Single video chat: First 15k chars of transcript (app.py:139)
-- Multi-video chat: First 10 video summaries (app.py:184)
-- Summary generation: First 12k chars of transcript (generate_summaries.py:42)
+- Single video chat: First 15k chars of transcript
+- Multi-video chat: First 10 video summaries
+- Summary generation: First 12k chars of transcript (scripts/generate_summaries.py)
 - These limits prevent token overflow while maintaining quality
 
 ### YouTube Transcript API
@@ -153,40 +167,47 @@ Streamlit session state tracks:
 ## Development Patterns
 
 ### Adding New Videos
-1. Edit `extract_transcripts.py` to update `VIDEOS` list with new video IDs
-2. Run `uv run python extract_transcripts.py`
-3. For missing transcripts, wait 24-48 hours then run `uv run python recheck_missing_transcripts.py`
-4. Generate summaries: `uv run python generate_summaries.py`
+1. Edit `scripts/extract_transcripts.py` to update `VIDEOS` list with new video IDs
+2. Run `uv run python scripts/extract_transcripts.py`
+3. For missing transcripts, wait 24-48 hours then run `uv run python scripts/recheck_missing_transcripts.py`
+4. Generate summaries: `uv run python scripts/generate_summaries.py`
+5. Import to Supabase: `uv run python scripts/import_data.py`
 
 ### Extending Search Functionality
-The `search_videos()` function (app.py:75-103) searches in order:
-1. Title match → add to results
-2. Presenter name/affiliation match → add to results
-3. Transcript content match → add to results
-
-To add new search fields, insert additional checks before transcript search.
+Search is handled in React frontend (`frontend/src/App.tsx`):
+1. Client-side filtering of videos fetched from Supabase
+2. Searches: title, presenter names/affiliations, transcript content
+3. To add new search fields, update the filter logic in the component
 
 ### Modifying AI Prompts
-- Single video context: app.py:133-141
-- Multi-video context: app.py:180-186
-- Summary generation: generate_summaries.py:44-59
+- Single video chat: `frontend/src/App.tsx` (ChatWithVideo component)
+- Multi-video chat: `frontend/src/App.tsx` (ChatWithAll component)
+- Summary generation: `scripts/generate_summaries.py`
+- API proxy: `frontend/api/chat.ts` (Vercel Edge Function)
 
 All prompts emphasize conciseness and citation of specific points.
 
 ### JSON Schema Modifications
 If adding fields to video objects:
-1. Update `restructure_with_summary()` in generate_summaries.py to include new field in correct position
-2. Field order matters for readability: identification → presenters → metadata → transcript
+1. Update `scripts/generate_summaries.py` to include new field
+2. Update Supabase schema if field should be stored in database
+3. Update TypeScript types in `frontend/src/App.tsx`
+4. Field order: identification → presenters → metadata → transcript
 
 ## Dependencies
 
-Core libraries (see pyproject.toml):
-- **streamlit**: Web interface framework
-- **requests**: HTTP client for UIUC Chat API
+### Python (scripts only - see pyproject.toml):
 - **youtube-transcript-api**: YouTube transcript extraction
-- **yt-dlp**: Video metadata extraction (if needed)
+- **yt-dlp**: Video metadata extraction
 - **python-dotenv**: Environment variable management
-- **pandas**: Data manipulation (if needed for analysis)
+- **supabase**: Database client for data import
+
+### Frontend (see frontend/package.json):
+- **react**: UI framework
+- **typescript**: Type safety
+- **vite**: Build tool and dev server
+- **@supabase/supabase-js**: Database client
+- **react-markdown**: Markdown rendering for chat messages
 
 ## Typical Workflows
 
@@ -201,35 +222,42 @@ echo "UIUC_CHAT_COURSE_NAME=experimental-chatbot" >> .env
 
 ### Extract New Workshop Videos
 ```bash
-# 1. Update VIDEOS list in extract_transcripts.py
+# 1. Update VIDEOS list in scripts/extract_transcripts.py
 # 2. Extract transcripts
-uv run python extract_transcripts.py
+uv run python scripts/extract_transcripts.py
 
 # 3. Wait 24-48 hours for new videos, then retry
-uv run python recheck_missing_transcripts.py
+uv run python scripts/recheck_missing_transcripts.py
 
 # 4. Generate AI summaries
-uv run python generate_summaries.py
+uv run python scripts/generate_summaries.py
+
+# 5. Import to Supabase
+uv run python scripts/import_data.py
 ```
 
 ### Run Web App
 ```bash
-uv run streamlit run app.py
-# Opens at http://localhost:8501
+cd frontend
+npm install
+npm run dev
+# Opens at http://localhost:5173
 ```
 
 ### Query Presenter Data
 ```bash
-uv run python analyze_presenters.py
+uv run python scripts/analyze_presenters.py
 # Interactive CLI menu for searching/analyzing presenters
 ```
 
 ## Important Notes
 
-- Always use `uv run` for script execution (not bare `python`)
+- Always use `uv run` for Python script execution (not bare `python`)
+- All Python scripts are in the `/scripts` directory
 - YouTube transcripts may not be immediately available for new uploads
-- UIUC Chat API credentials must be set in `.env` before running app
-- Uses your hosted infrastructure - no external API costs
-- The app uses cached resources (`@st.cache_resource`, `@st.cache_data`) for performance
-- Session state is cleared on browser refresh
+- UIUC Chat API credentials must be set in `frontend/.env` before running app
+- Free for academic use - no API costs
+- Vercel Edge Functions proxy API requests to avoid CORS issues
+- React app fetches data from Supabase on initial load
 - Transcript context is truncated to ~15k chars for optimal performance
+- Session state is managed client-side and cleared on browser refresh
