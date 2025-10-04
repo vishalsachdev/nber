@@ -4,4 +4,14 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api/chat': {
+        target: 'https://uiuc.chat/api/chat-api/chat',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/chat/, ''),
+      }
+    }
+  }
 })
