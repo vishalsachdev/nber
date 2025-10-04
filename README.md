@@ -2,6 +2,8 @@
 
 An interactive AI-powered tool for exploring presentations from the NBER Economics of Transformative AI Workshop (Fall 2025). Search through 17 presentations, chat with video transcripts using AI, and discover insights from leading economists on how transformative AI will reshape labor markets, innovation, competition, and economic policy.
 
+**🌐 Live Demo (React)**: https://frontend-13nkin9ja-vishalsachdevs-projects.vercel.app
+
 ## About the Workshop
 
 The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/economics-transformative-ai-workshop-fall-2025) brings together leading economists to explore the economic implications of transformative artificial intelligence. Organized by Ajay K. Agrawal (University of Toronto), Anton Korinek (University of Virginia), and Erik Brynjolfsson (Stanford), the workshop features presentations from luminaries including:
@@ -9,7 +11,7 @@ The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/e
 - Daron Acemoglu (MIT)
 - Paul Romer (NYU)
 - Joseph Stiglitz (Columbia)
-- And 30+ other leading economists
+- And 31 other leading economists
 
 **Workshop Coverage:**
 - 17 video presentations
@@ -34,18 +36,16 @@ The [Economics of Transformative AI Workshop](https://www.nber.org/conferences/e
 ```bash
 # Clone and setup
 git clone https://github.com/vishalsachdev/nber.git
-cd nber
-uv sync
+cd nber/frontend
 
-# Add UIUC Chat API credentials
-echo "UIUC_CHAT_API_KEY=your-api-key" > .env
-echo "UIUC_CHAT_COURSE_NAME=experimental-chatbot" >> .env
+# Install dependencies
+npm install
 
-# Run the app
-uv run streamlit run app.py
+# Run development server
+npm run dev
 ```
 
-The app will open at `http://localhost:8501`.
+The app will open at `http://localhost:5173`.
 
 ### Data Extraction Scripts
 
@@ -69,17 +69,17 @@ uv run python analyze_presenters.py
 
 ```
 .
-├── app.py                           # Streamlit web application
+├── frontend/                        # React web application
+│   ├── src/                        # React components and logic
+│   ├── api/chat.ts                 # Vercel Edge Function for UIUC Chat API proxy
+│   └── package.json                # Frontend dependencies
 ├── extract_transcripts.py           # YouTube transcript extraction
 ├── recheck_missing_transcripts.py   # Retry logic for missing transcripts
-├── generate_summaries.py            # AI summary generation using GPT-4o-mini
+├── generate_summaries.py            # AI summary generation
 ├── analyze_presenters.py            # Interactive presenter analysis CLI
 ├── nber_videos_transcripts.json     # Complete dataset (17 videos, full metadata)
-├── video_status.json                # Transcript availability tracking
 ├── CLAUDE.md                        # Codebase guide for AI assistants
-├── FEATURES.md                      # Future features and cost control roadmap
 └── articles/                        # Development documentation
-    └── 2025-09-30-nber-ai-workshop-explorer.md
 ```
 
 ## Data Files
@@ -87,7 +87,7 @@ uv run python analyze_presenters.py
 **`nber_videos_transcripts.json`** (Complete Dataset):
 - 17 videos with full transcripts (91,733 words total)
 - AI-generated summaries for all presentations
-- 38 presenter profiles with Google Scholar links
+- 34 presenter profiles with Google Scholar links
 - Complete metadata (descriptions, upload dates, word counts)
 
 **`video_status.json`** (Tracking):
@@ -96,21 +96,12 @@ uv run python analyze_presenters.py
 
 ## Technology Stack
 
-- **Frontend:** Streamlit (Python web framework)
-- **AI:** OpenAI GPT-4o-mini for chat and summaries
+- **Frontend:** React + Vite + TypeScript
+- **AI:** UIUC Chat API (Qwen2.5-VL-72B) - Free for academic use
+- **Deployment:** Vercel (frontend + Edge Functions)
 - **Data:** YouTube Transcript API, yt-dlp
-- **Environment:** uv for fast dependency management
-- **Cost:** ~$0.003-0.005 per chat interaction
-
-## Cost Optimization
-
-For public deployment, see `FEATURES.md` for comprehensive cost control strategies:
-- Rate limiting (per-session and global)
-- OpenAI budget caps
-- Context window optimization
-- Response caching
-
-Estimated cost with controls: **$10-50/month** for moderate traffic.
+- **Environment:** uv for Python scripts
+- **Cost:** Free (UIUC Chat API)
 
 ## Development Setup
 
