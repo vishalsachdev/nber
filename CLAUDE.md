@@ -116,18 +116,19 @@ Streamlit-based interface with four main sections:
 
 Required in `.env` file (never commit this file):
 ```
-OPENAI_API_KEY=sk-your-key-here
+UIUC_CHAT_API_KEY=uc_your-key-here
+UIUC_CHAT_COURSE_NAME=experimental-chatbot
 ```
 
-The app validates this at startup and stops with error if missing (app.py:26-29).
+The app validates credentials at startup and stops with error if missing (app.py:24-31).
 
 ## Key Implementation Details
 
-### OpenAI Integration
-- Model: `gpt-4o-mini` (cost-effective, fast)
-- Input pricing: $0.15 per 1M tokens
-- Output pricing: $0.60 per 1M tokens
-- Typical chat cost: < $0.01 per conversation
+### AI Integration (UIUC Chat API)
+- Model: `Qwen/Qwen2.5-VL-72B-Instruct`
+- Provider: UIUC.chat (self-hosted LLM)
+- Endpoint: `https://uiuc.chat/api/chat-api/chat`
+- Cost: Uses your hosted infrastructure
 - Temperature: 0.7 for balanced creativity
 - Streaming enabled for better UX
 
@@ -181,7 +182,7 @@ If adding fields to video objects:
 
 Core libraries (see pyproject.toml):
 - **streamlit**: Web interface framework
-- **openai**: OpenAI API client
+- **requests**: HTTP client for UIUC Chat API
 - **youtube-transcript-api**: YouTube transcript extraction
 - **yt-dlp**: Video metadata extraction (if needed)
 - **python-dotenv**: Environment variable management
@@ -194,7 +195,8 @@ Core libraries (see pyproject.toml):
 git clone <repo>
 cd nber
 uv sync
-echo "OPENAI_API_KEY=sk-..." > .env
+echo "UIUC_CHAT_API_KEY=uc_..." > .env
+echo "UIUC_CHAT_COURSE_NAME=experimental-chatbot" >> .env
 ```
 
 ### Extract New Workshop Videos
@@ -226,7 +228,8 @@ uv run python analyze_presenters.py
 
 - Always use `uv run` for script execution (not bare `python`)
 - YouTube transcripts may not be immediately available for new uploads
-- OpenAI API key must be set in `.env` before running app
+- UIUC Chat API credentials must be set in `.env` before running app
+- Uses your hosted infrastructure - no external API costs
 - The app uses cached resources (`@st.cache_resource`, `@st.cache_data`) for performance
 - Session state is cleared on browser refresh
-- Transcript context is truncated to stay within API token limits
+- Transcript context is truncated to ~15k chars for optimal performance

@@ -37,8 +37,9 @@ git clone https://github.com/vishalsachdev/nber.git
 cd nber
 uv sync
 
-# Add OpenAI API key
-echo "OPENAI_API_KEY=your-key-here" > .env
+# Add UIUC Chat API credentials
+echo "UIUC_CHAT_API_KEY=your-api-key" > .env
+echo "UIUC_CHAT_COURSE_NAME=experimental-chatbot" >> .env
 
 # Run the app
 uv run streamlit run app.py

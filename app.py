@@ -6,7 +6,7 @@ A Streamlit app for searching and chatting with video transcripts
 import streamlit as st
 import json
 import os
-from openai import OpenAI
+import requests
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -20,14 +20,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Initialize OpenAI client
+# Validate UIUC Chat API credentials
 @st.cache_resource
-def get_openai_client():
-    api_key = os.getenv("OPENAI_API_KEY")
+def get_api_credentials():
+    api_key = os.getenv("UIUC_CHAT_API_KEY")
+    course_name = os.getenv("UIUC_CHAT_COURSE_NAME", "experimental-chatbot")
     if not api_key:
-        st.error("❌ OPENAI_API_KEY not found. Please set it in your .env file.")
+        st.error("❌ UIUC_CHAT_API_KEY not found. Please set it in your .env file.")
         st.stop()
-    return OpenAI(api_key=api_key)
+    return api_key, course_name
 
 # Load video data
 @st.cache_data
@@ -45,7 +46,7 @@ if 'search_query' not in st.session_state:
 if 'show_chat_message' not in st.session_state:
     st.session_state.show_chat_message = False
 
-client = get_openai_client()
+api_key, course_name = get_api_credentials()
 videos = load_videos()
 
 # Header
@@ -161,34 +162,45 @@ def get_all_presenters():
     return sorted(presenter_map.values(), key=lambda x: x['name'])
 
 def chat_with_transcript(video, user_message):
-    """Generate response using OpenAI with transcript context"""
+    """Generate response using UIUC Chat API with transcript context"""
     if not video.get('transcript'):
         return "❌ No transcript available for this video."
 
-    # Prepare context
-    context = f"""You are an AI assistant helping users understand a presentation from the NBER Economics of Transformative AI Workshop.
+    # Prepare context - put transcript in user message for better handling
+    transcript_context = f"""Here is a transcript from the NBER Economics of Transformative AI Workshop:
 
-Video Title: {video['title']}
-Presenters: {', '.join([p['name'] for p in video.get('presenters', [])])}
+**Video:** {video['title']}
+**Presenters:** {', '.join([p['name'] for p in video.get('presenters', [])])}
 
-Full Transcript:
-{video['transcript'][:15000]}  # Limit context to ~15k chars to stay within token limits
+**Transcript:**
+{video['transcript'][:15000]}
 
-Answer the user's question based on this transcript. Be concise and cite specific points from the presentation when relevant."""
+**Question:** {user_message}
+
+Please answer based on the transcript above. Be concise and cite specific points when relevant."""
 
     # Add to message history
     st.session_state.messages.append({"role": "user", "content": user_message})
 
-    # Call OpenAI API
+    # Call UIUC Chat API
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": context},
-                *st.session_state.messages
+        payload = {
+            "model": "Qwen/Qwen2.5-VL-72B-Instruct",
+            "messages": [
+                {"role": "system", "content": "You are a helpful AI assistant. Answer questions based ONLY on the information provided. Do not add document citations."},
+                {"role": "user", "content": transcript_context}
             ],
-            temperature=0.7,
-            max_tokens=1000,
+            "api_key": api_key,
+            "course_name": course_name,
+            "stream": True,
+            "temperature": 0.7,
+            "retrieval_only": False
+        }
+
+        response = requests.post(
+            'https://uiuc.chat/api/chat-api/chat',
+            headers={'Content-Type': 'application/json'},
+            json=payload,
             stream=True
         )
 
@@ -213,27 +225,36 @@ def chat_with_all_transcripts(user_message):
         summary = video.get('ai_summary', video['transcript'][:500])
         video_summaries.append(f"**{title}** by {presenters}\n{summary}")
 
-    context = f"""You are an AI assistant helping users understand presentations from the NBER Economics of Transformative AI Workshop (Fall 2025).
+    all_context = f"""Here are summaries from {len(available_videos)} presentations from the NBER Economics of Transformative AI Workshop:
 
-You have access to information from {len(available_videos)} presentations:
+{chr(10).join(video_summaries[:10])}
 
-{chr(10).join(video_summaries[:10])}  # Limit to first 10 to stay within token limits
+**Question:** {user_message}
 
-Answer the user's question by synthesizing information across these presentations. When referencing specific presentations, mention the title and presenter. If the question relates to a specific topic, identify which presentations are most relevant."""
+Please answer by synthesizing information across these presentations. When referencing specific presentations, mention the title and presenter."""
 
     # Add to message history
     st.session_state.messages.append({"role": "user", "content": user_message})
 
-    # Call OpenAI API
+    # Call UIUC Chat API
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": context},
-                *st.session_state.messages
+        payload = {
+            "model": "Qwen/Qwen2.5-VL-72B-Instruct",
+            "messages": [
+                {"role": "system", "content": "You are a helpful AI assistant. Answer questions based ONLY on the information provided. Do not add document citations."},
+                {"role": "user", "content": all_context}
             ],
-            temperature=0.7,
-            max_tokens=1200,
+            "api_key": api_key,
+            "course_name": course_name,
+            "stream": True,
+            "temperature": 0.7,
+            "retrieval_only": False
+        }
+
+        response = requests.post(
+            'https://uiuc.chat/api/chat-api/chat',
+            headers={'Content-Type': 'application/json'},
+            json=payload,
             stream=True
         )
 
@@ -281,7 +302,7 @@ with tab1:
                 if video.get('ai_summary'):
                     st.markdown("**📝 AI-Generated Summary:**")
                     st.info(video['ai_summary'])
-                    st.caption("*Summary generated using OpenAI GPT-4o-mini*")
+                    st.caption("*Summary generated using AI*")
 
             with col2:
                 st.metric("Transcript", "✅ Available" if video['has_transcript'] else "❌ Not Available")
@@ -360,9 +381,17 @@ with tab2:
                 if isinstance(response_stream, str):
                     st.markdown(response_stream)
                 else:
-                    response_text = st.write_stream(
-                        (chunk.choices[0].delta.content or "" for chunk in response_stream)
-                    )
+                    # Handle UIUC Chat API streaming response (plain text chunks)
+                    response_text = ""
+                    response_placeholder = st.empty()
+
+                    for line in response_stream.iter_lines():
+                        if line:
+                            chunk = line.decode('utf-8')
+                            response_text += chunk
+                            response_placeholder.markdown(response_text + "▌")
+
+                    response_placeholder.markdown(response_text)
                     st.session_state.messages.append({"role": "assistant", "content": response_text})
 
         # AI Summary (shown expanded if no chat messages yet)
@@ -372,7 +401,7 @@ with tab2:
             is_expanded = len(st.session_state.messages) == 0
             with st.expander("📝 AI-Generated Summary", expanded=is_expanded):
                 st.info(video['ai_summary'])
-                st.caption("*Summary generated using OpenAI GPT-4o-mini*")
+                st.caption("*Summary generated using AI*")
 
 with tab3:
     st.markdown("### 🌐 Chat with All Transcripts")
@@ -408,9 +437,17 @@ with tab3:
             if isinstance(response_stream, str):
                 st.markdown(response_stream)
             else:
-                response_text = st.write_stream(
-                    (chunk.choices[0].delta.content or "" for chunk in response_stream)
-                )
+                # Handle UIUC Chat API streaming response (plain text chunks)
+                response_text = ""
+                response_placeholder = st.empty()
+
+                for line in response_stream.iter_lines():
+                    if line:
+                        chunk = line.decode('utf-8')
+                        response_text += chunk
+                        response_placeholder.markdown(response_text + "▌")
+
+                response_placeholder.markdown(response_text)
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
 
     # Show available videos (moved to bottom as collapsed reference)
@@ -469,6 +506,6 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.caption("🏛️ NBER Workshop Fall 2025")
 with col2:
-    st.caption("🤖 Powered by OpenAI GPT-4o-mini")
+    st.caption("🤖 Powered by Qwen2.5-VL-72B via UIUC.chat")
 with col3:
     st.caption("⚡ Built with Streamlit")
