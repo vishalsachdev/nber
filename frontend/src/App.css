@@ -82,6 +82,7 @@ body {
   padding: calc(var(--spacing-unit) * 3);
   margin-bottom: calc(var(--spacing-unit) * 4);
   line-height: 1.7;
+  max-width: 900px;
 }
 
 .header-description p {
@@ -164,6 +165,15 @@ body {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing-unit) * 1);
+}
+
+.tab:focus-visible,
+.btn:focus-visible,
+.presenter-link:focus-visible,
+.header-links a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .tab:hover {
@@ -262,6 +272,7 @@ mark {
 .videos-grid {
   display: grid;
   gap: calc(var(--spacing-unit) * 3);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
 .video-card {
@@ -427,6 +438,7 @@ mark {
   align-items: center;
   gap: calc(var(--spacing-unit) * 1);
   border: none;
+  min-height: 44px; /* comfortable touch target */
 }
 
 .btn-primary {
@@ -697,6 +709,7 @@ mark {
 .video-list {
   display: grid;
   gap: calc(var(--spacing-unit) * 2);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .video-select-btn {
@@ -959,6 +972,15 @@ mark {
 
   .presenters-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
