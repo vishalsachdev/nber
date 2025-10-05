@@ -25,7 +25,7 @@ export default function Header({ videosCount, transcriptsCount, presentersCount 
             Ask questions, compare perspectives across talks, and discover insights in seconds—powered by AI that understands the full context of the content.
           </p>
           <div className="header-links">
-            <a href="https://www.youtube.com/@NBERvideos/videos" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.youtube.com/watch?v=_pC1SxOTY3A&list=PLzkvpFzYZ4tqOpe-ZhgnFv_a3zNAMpbN2" target="_blank" rel="noopener noreferrer">
               📺 Watch all presentations on YouTube
             </a>
             <span>•</span>
