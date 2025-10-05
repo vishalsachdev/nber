@@ -19,6 +19,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatAllPrefill, setChatAllPrefill] = useState<string>('');
+  const [shareFeedback, setShareFeedback] = useState<string>('');
 
   useEffect(() => {
     // Initialize from URL parameters
@@ -145,14 +146,26 @@ function App() {
         <div className="tabs-spacer" />
         <button
           className="tab share-link"
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href).catch(() => {});
+          onClick={async () => {
+            const url = window.location.href;
+            try {
+              await navigator.clipboard.writeText(url);
+              setShareFeedback('Link copied. Paste it to share this view.');
+            } catch {
+              // Fallback for older browsers: show prompt
+              window.prompt('Copy this link to share:', url);
+              setShareFeedback('Link ready. Copy/paste to share this view.');
+            }
+            window.setTimeout(() => setShareFeedback(''), 2500);
           }}
           aria-label="Copy shareable link"
         >
           <span className="tab-icon">🔗</span>
           Share
         </button>
+        {shareFeedback && (
+          <span className="share-hint" role="status" aria-live="polite">{shareFeedback}</span>
+        )}
       </nav>
 
       <main className="main-content">

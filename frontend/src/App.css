@@ -180,6 +180,14 @@ body {
   font-size: 1.25rem;
 }
 
+/* Share hint near the Share button */
+.share-hint {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-left: calc(var(--spacing-unit) * 2);
+  align-self: center;
+}
+
 .main-content {
   flex: 1;
   max-width: 1200px;
