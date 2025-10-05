@@ -7,7 +7,11 @@ interface ChatWithAllProps {
   videos: VideoWithPresenters[];
 }
 
-export default function ChatWithAll({ videos }: ChatWithAllProps) {
+interface ChatWithAllExtraProps {
+  initialInput?: string;
+}
+
+export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps & ChatWithAllExtraProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -16,6 +20,12 @@ export default function ChatWithAll({ videos }: ChatWithAllProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    if (initialInput && !isStreaming) {
+      setInput(initialInput);
+    }
+  }, [initialInput, isStreaming]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

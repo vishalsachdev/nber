@@ -18,6 +18,7 @@ function App() {
   const [selectedVideo, setSelectedVideo] = useState<VideoWithPresenters | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chatAllPrefill, setChatAllPrefill] = useState<string>('');
 
   useEffect(() => {
     loadVideos();
@@ -48,6 +49,16 @@ function App() {
   const handleStartChat = (video: VideoWithPresenters) => {
     setSelectedVideo(video);
     setActiveTab('chat-video');
+  };
+
+  const handleSearchByPresenter = (name: string) => {
+    setSearchQuery(name);
+    setActiveTab('search');
+  };
+
+  const handleChatWithPresenter = (name: string) => {
+    setChatAllPrefill(`What are the key points from presentations by ${name}?`);
+    setActiveTab('chat-all');
   };
 
   if (loading) {
@@ -132,9 +143,17 @@ function App() {
           />
         )}
         {activeTab === 'chat-all' && (
-          <ChatWithAll videos={videos.filter(v => v.has_transcript)} />
+          <ChatWithAll
+            videos={videos.filter(v => v.has_transcript)}
+            initialInput={chatAllPrefill}
+          />
         )}
-        {activeTab === 'presenters' && <Presenters />}
+        {activeTab === 'presenters' && (
+          <Presenters
+            onSearchByName={handleSearchByPresenter}
+            onChatWithPresenter={handleChatWithPresenter}
+          />
+        )}
       </main>
 
       <footer className="footer">
