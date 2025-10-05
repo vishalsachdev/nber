@@ -106,7 +106,21 @@ export default function Presenters({ onSearchByName, onChatWithPresenter }: Pres
         {filteredPresenters.map((presenter, idx) => (
           <div key={presenter.id || idx} className="presenter-card">
             <div className="presenter-header">
-              <h3><Highlight text={presenter.name} query={searchQuery} /></h3>
+              <h3>
+                {presenter.scholar_url ? (
+                  <a
+                    href={presenter.scholar_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="presenter-link"
+                    title="Google Scholar Profile"
+                  >
+                    <Highlight text={presenter.name} query={searchQuery} />
+                  </a>
+                ) : (
+                  <Highlight text={presenter.name} query={searchQuery} />
+                )}
+              </h3>
               {presenter.scholar_url && (
                 <a
                   href={presenter.scholar_url}
