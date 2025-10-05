@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import type { VideoWithPresenters } from '../lib/api';
+import type { VideoWithPresenters, Presenter } from '../lib/api';
 import { chatWithAllVideos, type ChatMessage } from '../lib/openai';
 
 interface ChatWithAllProps {
@@ -116,7 +116,7 @@ export default function ChatWithAll({ videos }: ChatWithAllProps) {
               <a href={video.url} target="_blank" rel="noopener noreferrer">
                 {video.title}
               </a>
-              {' '}by {video.presenters.map(p => p.name).join(', ')}
+              {' '}by {video.presenters.map((p: Presenter) => p.name).join(', ')}
             </li>
           ))}
         </ul>
