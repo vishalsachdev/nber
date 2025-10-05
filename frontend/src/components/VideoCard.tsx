@@ -4,9 +4,21 @@ import type { VideoWithPresenters, Presenter } from '../lib/api';
 interface VideoCardProps {
   video: VideoWithPresenters;
   onStartChat: (video: VideoWithPresenters) => void;
+  highlight?: string;
 }
 
-export default function VideoCard({ video, onStartChat }: VideoCardProps) {
+function Highlight({ text, query }: { text: string; query?: string }) {
+  if (!query) return <>{text}</>;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const parts = text.split(new RegExp(`(${escaped})`, 'ig'));
+  return (
+    <>
+      {parts.map((part, i) => part.toLowerCase() === query.toLowerCase() ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>)}
+    </>
+  );
+}
+
+export default function VideoCard({ video, onStartChat, highlight }: VideoCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -16,7 +28,7 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
         onClick={() => setExpanded(!expanded)}
         style={{ cursor: 'pointer' }}
       >
-        <h3>{video.title}</h3>
+        <h3><Highlight text={video.title} query={highlight} /></h3>
         <button
           className="expand-btn"
           aria-label={expanded ? 'Collapse' : 'Expand'}
@@ -54,10 +66,10 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
                           rel="noopener noreferrer"
                           className="presenter-link"
                         >
-                          {presenter.name}
+                          <Highlight text={presenter.name} query={highlight} />
                         </a>
                       ) : (
-                        presenter.name
+                        <Highlight text={presenter.name} query={highlight} />
                       )}
                       {' '}- <span className="affiliation">{presenter.affiliation}</span>
                     </li>

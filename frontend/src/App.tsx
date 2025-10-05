@@ -21,6 +21,18 @@ function App() {
   const [chatAllPrefill, setChatAllPrefill] = useState<string>('');
 
   useEffect(() => {
+    // Initialize from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    const qParam = params.get('q');
+    const chatParam = params.get('chat');
+
+    if (tabParam && ['search', 'chat-video', 'chat-all', 'presenters'].includes(tabParam)) {
+      setActiveTab(tabParam as Tab);
+    }
+    if (qParam) setSearchQuery(qParam);
+    if (chatParam) setChatAllPrefill(chatParam);
+
     loadVideos();
   }, []);
 
@@ -31,6 +43,16 @@ function App() {
       setFilteredVideos(videos);
     }
   }, [searchQuery, videos]);
+
+  // Keep URL in sync with key state
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', activeTab);
+    if (searchQuery) params.set('q', searchQuery); else params.delete('q');
+    if (chatAllPrefill) params.set('chat', chatAllPrefill); else params.delete('chat');
+    const next = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, '', next);
+  }, [activeTab, searchQuery, chatAllPrefill]);
 
   async function loadVideos() {
     try {
@@ -119,6 +141,17 @@ function App() {
         >
           <span className="tab-icon">👥</span>
           Presenters
+        </button>
+        <div className="tabs-spacer" />
+        <button
+          className="tab share-link"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href).catch(() => {});
+          }}
+          aria-label="Copy shareable link"
+        >
+          <span className="tab-icon">🔗</span>
+          Share
         </button>
       </nav>
 

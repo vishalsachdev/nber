@@ -11,7 +11,8 @@ export async function* chatWithVideo(
   title: string,
   presenterNames: string[],
   transcript: string,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  signal?: AbortSignal
 ): AsyncGenerator<string> {
   const apiKey = import.meta.env.VITE_UIUC_CHAT_API_KEY;
   const courseName = import.meta.env.VITE_UIUC_CHAT_COURSE_NAME || 'experimental-chatbot';
@@ -55,7 +56,8 @@ Please answer based on the transcript above. Be concise and cite specific points
       stream: true,
       temperature: 0.7,
       retrieval_only: false
-    })
+    }),
+    signal
   });
 
   if (!response.ok) {
@@ -70,7 +72,8 @@ Please answer based on the transcript above. Be concise and cite specific points
 // Chat with all videos using summaries
 export async function* chatWithAllVideos(
   videos: VideoWithPresenters[],
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  signal?: AbortSignal
 ): AsyncGenerator<string> {
   const apiKey = import.meta.env.VITE_UIUC_CHAT_API_KEY;
   const courseName = import.meta.env.VITE_UIUC_CHAT_COURSE_NAME || 'experimental-chatbot';
@@ -115,7 +118,8 @@ Please answer by synthesizing information across these presentations. When refer
       stream: true,
       temperature: 0.7,
       retrieval_only: false
-    })
+    }),
+    signal
   });
 
   if (!response.ok) {

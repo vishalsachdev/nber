@@ -29,6 +29,16 @@ export default function SearchBrowse({
           onChange={(e) => onSearchChange(e.target.value)}
           className="search-input"
         />
+        {searchQuery && (
+          <button
+            className="search-clear"
+            onClick={() => onSearchChange('')}
+            aria-label="Clear search"
+            title="Clear search"
+          >
+            ×
+          </button>
+        )}
       </div>
 
       <div className="results-count">
@@ -40,6 +50,7 @@ export default function SearchBrowse({
           <VideoCard
             key={video.id}
             video={video}
+            highlight={searchQuery}
             onStartChat={onStartChat}
           />
         ))}

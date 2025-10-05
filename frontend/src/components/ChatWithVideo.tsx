@@ -20,6 +20,8 @@ export default function ChatWithVideo({
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const [lastPrompt, setLastPrompt] = useState('');
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -37,16 +39,20 @@ export default function ChatWithVideo({
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsStreaming(true);
+    setLastPrompt(userMessage.content);
 
     const assistantMessage: ChatMessage = { role: 'assistant', content: '' };
     setMessages(prev => [...prev, assistantMessage]);
 
     try {
+      abortRef.current?.abort();
+      abortRef.current = new AbortController();
       const stream = chatWithVideo(
         selectedVideo.title,
         selectedVideo.presenters.map((p: Presenter) => p.name),
         selectedVideo.transcript || '',
-        [...messages, userMessage]
+        [...messages, userMessage],
+        abortRef.current.signal
       );
 
       for await (const chunk of stream) {
@@ -58,6 +64,17 @@ export default function ChatWithVideo({
       setMessages(prev => [...prev.slice(0, -1), { ...assistantMessage }]);
     } finally {
       setIsStreaming(false);
+    }
+  };
+
+  const handleStop = () => {
+    abortRef.current?.abort();
+    setIsStreaming(false);
+  };
+
+  const handleRetry = () => {
+    if (lastPrompt && !isStreaming) {
+      setInput(lastPrompt);
     }
   };
 
@@ -122,7 +139,7 @@ export default function ChatWithVideo({
       </div>
 
       <div className="chat-container">
-        <div className="chat-messages">
+        <div className="chat-messages" aria-live="polite">
           {messages.length === 0 && selectedVideo.ai_summary && (
             <div className="chat-message assistant">
               <div className="message-content">
@@ -136,9 +153,26 @@ export default function ChatWithVideo({
             <div key={index} className={`chat-message ${message.role}`}>
               <div className="message-content">
                 <ReactMarkdown>{message.content}</ReactMarkdown>
+                {message.role === 'assistant' && (
+                  <div style={{ marginTop: 8 }}>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => navigator.clipboard.writeText(message.content)}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
+          {isStreaming && (
+            <div className="chat-message assistant">
+              <div className="message-content">
+                <em className="typing">Assistant is typing…</em>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
@@ -151,13 +185,14 @@ export default function ChatWithVideo({
             disabled={isStreaming}
             className="chat-input"
           />
-          <button
-            type="submit"
-            disabled={!input.trim() || isStreaming}
-            className="btn btn-primary"
-          >
-            {isStreaming ? '...' : 'Send'}
-          </button>
+          {!isStreaming ? (
+            <>
+              <button type="submit" disabled={!input.trim()} className="btn btn-primary">Send</button>
+              <button type="button" className="btn btn-secondary" onClick={handleRetry} disabled={!lastPrompt}>Retry</button>
+            </>
+          ) : (
+            <button type="button" className="btn btn-secondary" onClick={handleStop}>Stop</button>
+          )}
         </form>
       </div>
     </div>

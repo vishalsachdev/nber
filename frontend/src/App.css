@@ -953,3 +953,19 @@ mark {
     grid-template-columns: 1fr;
   }
 }
+
+/* UI/UX enhancements */
+.tabs-spacer { flex: 1; }
+.search-bar { position: relative; }
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.typing { color: var(--color-text-secondary); }

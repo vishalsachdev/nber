@@ -16,6 +16,8 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const [lastPrompt, setLastPrompt] = useState('');
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -35,12 +37,15 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsStreaming(true);
+    setLastPrompt(userMessage.content);
 
     const assistantMessage: ChatMessage = { role: 'assistant', content: '' };
     setMessages(prev => [...prev, assistantMessage]);
 
     try {
-      const stream = chatWithAllVideos(videos, [...messages, userMessage]);
+      abortRef.current?.abort();
+      abortRef.current = new AbortController();
+      const stream = chatWithAllVideos(videos, [...messages, userMessage], abortRef.current.signal);
 
       for await (const chunk of stream) {
         assistantMessage.content += chunk;
@@ -51,6 +56,17 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
       setMessages(prev => [...prev.slice(0, -1), { ...assistantMessage }]);
     } finally {
       setIsStreaming(false);
+    }
+  };
+
+  const handleStop = () => {
+    abortRef.current?.abort();
+    setIsStreaming(false);
+  };
+
+  const handleRetry = () => {
+    if (lastPrompt && !isStreaming) {
+      setInput(lastPrompt);
     }
   };
 
@@ -70,7 +86,7 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
       </div>
 
       <div className="chat-container">
-        <div className="chat-messages">
+        <div className="chat-messages" aria-live="polite">
           {messages.length === 0 && (
             <div className="suggestions">
               <h3>💡 Try asking:</h3>
@@ -93,9 +109,26 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
             <div key={index} className={`chat-message ${message.role}`}>
               <div className="message-content">
                 <ReactMarkdown>{message.content}</ReactMarkdown>
+                {message.role === 'assistant' && (
+                  <div style={{ marginTop: 8 }}>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => navigator.clipboard.writeText(message.content)}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
+          {isStreaming && (
+            <div className="chat-message assistant">
+              <div className="message-content">
+                <em className="typing">Assistant is typing…</em>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
@@ -108,13 +141,14 @@ export default function ChatWithAll({ videos, initialInput }: ChatWithAllProps &
             disabled={isStreaming}
             className="chat-input"
           />
-          <button
-            type="submit"
-            disabled={!input.trim() || isStreaming}
-            className="btn btn-primary"
-          >
-            {isStreaming ? '...' : 'Send'}
-          </button>
+          {!isStreaming ? (
+            <>
+              <button type="submit" disabled={!input.trim()} className="btn btn-primary">Send</button>
+              <button type="button" className="btn btn-secondary" onClick={handleRetry} disabled={!lastPrompt}>Retry</button>
+            </>
+          ) : (
+            <button type="button" className="btn btn-secondary" onClick={handleStop}>Stop</button>
+          )}
         </form>
       </div>
 
