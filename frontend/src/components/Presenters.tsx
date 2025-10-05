@@ -12,7 +12,6 @@ export default function Presenters({ onSearchByName, onChatWithPresenter }: Pres
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'name' | 'affiliation' | 'count'>('name');
-  const [selectedAffiliations, setSelectedAffiliations] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadPresenters();
@@ -30,20 +29,11 @@ export default function Presenters({ onSearchByName, onChatWithPresenter }: Pres
     }
   }
 
-  const allAffiliations = useMemo(() => {
-    const set = new Set<string>();
-    presenters.forEach(p => set.add(p.affiliation));
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [presenters]);
-
   const filteredPresenters = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    let list = presenters.filter(p =>
+    const list = presenters.filter(p =>
       !q || p.name.toLowerCase().includes(q) || p.affiliation.toLowerCase().includes(q)
     );
-    if (selectedAffiliations.size > 0) {
-      list = list.filter(p => selectedAffiliations.has(p.affiliation));
-    }
     switch (sortBy) {
       case 'affiliation':
         return list.sort((a, b) => a.affiliation.localeCompare(b.affiliation));
@@ -52,13 +42,7 @@ export default function Presenters({ onSearchByName, onChatWithPresenter }: Pres
       default:
         return list.sort((a, b) => a.name.localeCompare(b.name));
     }
-  }, [presenters, searchQuery, selectedAffiliations, sortBy]);
-
-  function toggleAffiliation(aff: string) {
-    const next = new Set(selectedAffiliations);
-    if (next.has(aff)) next.delete(aff); else next.add(aff);
-    setSelectedAffiliations(next);
-  }
+  }, [presenters, searchQuery, sortBy]);
 
   function Highlight({ text, query }: { text: string; query: string }) {
     if (!query) return <>{text}</>;
@@ -112,23 +96,7 @@ export default function Presenters({ onSearchByName, onChatWithPresenter }: Pres
         </div>
       </div>
 
-      {allAffiliations.length > 1 && (
-        <div className="filter-chips">
-          {allAffiliations.map((aff) => (
-            <button
-              key={aff}
-              className={`chip ${selectedAffiliations.has(aff) ? 'active' : ''}`}
-              onClick={() => toggleAffiliation(aff)}
-              aria-pressed={selectedAffiliations.has(aff)}
-            >
-              {aff}
-            </button>
-          ))}
-          {selectedAffiliations.size > 0 && (
-            <button className="chip" onClick={() => setSelectedAffiliations(new Set())}>Clear filters</button>
-          )}
-        </div>
-      )}
+      {/* Affiliation chips removed per request */}
 
       <div className="results-count">
         {filteredPresenters.length} Presenter{filteredPresenters.length !== 1 ? 's' : ''}
