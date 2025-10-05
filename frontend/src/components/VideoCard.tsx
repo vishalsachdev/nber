@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { VideoWithPresenters } from '../lib/api';
+import type { VideoWithPresenters, Presenter } from '../lib/api';
 
 interface VideoCardProps {
   video: VideoWithPresenters;
@@ -45,7 +45,7 @@ export default function VideoCard({ video, onStartChat }: VideoCardProps) {
               <div className="presenters">
                 <strong>Presenters:</strong>
                 <ul>
-                  {video.presenters.map((presenter, idx) => (
+                  {video.presenters.map((presenter: Presenter, idx: number) => (
                     <li key={presenter.id || idx}>
                       {presenter.scholar_url ? (
                         <a

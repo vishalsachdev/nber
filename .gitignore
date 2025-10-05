@@ -22,7 +22,12 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Python build output at repo root only
+/lib/
+
+# Allow TypeScript sources under frontend/src/lib
+!frontend/src/lib/
+!frontend/src/lib/**
 lib64/
 parts/
 sdist/

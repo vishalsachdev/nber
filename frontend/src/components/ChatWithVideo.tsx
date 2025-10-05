@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import type { VideoWithPresenters } from '../lib/api';
+import type { VideoWithPresenters, Presenter } from '../lib/api';
 import { chatWithVideo, type ChatMessage } from '../lib/openai';
 
 interface ChatWithVideoProps {
@@ -44,7 +44,7 @@ export default function ChatWithVideo({
     try {
       const stream = chatWithVideo(
         selectedVideo.title,
-        selectedVideo.presenters.map(p => p.name),
+        selectedVideo.presenters.map((p: Presenter) => p.name),
         selectedVideo.transcript || '',
         [...messages, userMessage]
       );
@@ -97,7 +97,7 @@ export default function ChatWithVideo({
           <h2>{selectedVideo.title}</h2>
           <div className="chat-meta">
             <span>
-              {selectedVideo.presenters.map((p, i) => (
+              {selectedVideo.presenters.map((p: Presenter, i: number) => (
                 <span key={p.id || i}>
                   {p.scholar_url ? (
                     <a href={p.scholar_url} target="_blank" rel="noopener noreferrer">
