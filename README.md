@@ -111,6 +111,8 @@ uv run python scripts/analyze_presenters.py
 
 ### Install uv
 
+Note: This commit is a no-op to trigger a Vercel redeploy via GitHub push.
+
 ```bash
 # macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
