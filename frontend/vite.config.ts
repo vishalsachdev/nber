@@ -10,7 +10,16 @@ export default defineConfig({
         target: 'https://uiuc.chat',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api\/chat/, '/api/chat-api/chat'),
+        rewrite: (path) => {
+          const newPath = path.replace(/^\/api\/chat/, '/api/chat-api/chat');
+          console.log(`Proxying ${path} -> ${newPath}`);
+          return newPath;
+        },
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Proxy request:', req.method, req.url, '-> https://uiuc.chat' + proxyReq.path);
+          });
+        }
       }
     }
   }

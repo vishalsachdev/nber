@@ -2,6 +2,9 @@
   "buildCommand": "cd frontend && npm ci && npm run build",
   "outputDirectory": "frontend/dist",
   "devCommand": "cd frontend && npm run dev",
-  "installCommand": "cd frontend && npm ci"
+  "installCommand": "cd frontend && npm ci",
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat" }
+  ]
 }
 
