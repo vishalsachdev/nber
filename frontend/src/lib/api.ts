@@ -125,7 +125,7 @@ export async function chatWithOpenAI(
   const userMessage = messages[messages.length - 1]?.content || '';
   const combinedMessage = `${contextPrompt}\n\n**Question:** ${userMessage}\n\nPlease answer based on the information above. Be concise and cite specific points when relevant.`;
 
-  const response = await fetch('https://uiuc.chat/api/chat-api/chat', {
+  const response = await fetch('https://chat.illinois.edu/api/chat-api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

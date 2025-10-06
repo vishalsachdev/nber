@@ -55,3 +55,8 @@ wheels/
 # Project-specific (keep data files in repo)
 # Uncomment if you want to exclude large data files:
 # *.json
+
+# Node.js (frontend)
+frontend/node_modules/
+frontend/.vercel/
+frontend/dist/*.map
