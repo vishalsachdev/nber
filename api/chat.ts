@@ -9,7 +9,7 @@ export default async function handler(req: Request) {
   try {
     const body = await req.json();
 
-    const upstream = await fetch('https://chat.illinois.edu/api/chat-api/chat', {
+    const upstream = await fetch('https://uiuc.chat/api/chat-api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

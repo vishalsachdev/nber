@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/chat': {
-        target: 'https://chat.illinois.edu',
+        target: 'https://uiuc.chat',
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api\/chat/, '/api/chat-api/chat'),
