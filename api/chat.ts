@@ -80,6 +80,48 @@ export default async function handler(req: Request) {
       }
     }
 
+    // If POST attempts failed, try GET with query params (some SSE endpoints are GET-only)
+    try {
+      const params = new URLSearchParams();
+      const anyBody: any = body as any;
+      if (anyBody?.model) params.set('model', String(anyBody.model));
+      if (Array.isArray(anyBody?.messages)) params.set('messages', JSON.stringify(anyBody.messages));
+      if (anyBody?.course_name) params.set('course_name', String(anyBody.course_name));
+      if (typeof anyBody?.stream !== 'undefined') params.set('stream', String(Boolean(anyBody.stream)));
+      if (typeof anyBody?.temperature !== 'undefined') params.set('temperature', String(anyBody.temperature));
+      if (typeof anyBody?.retrieval_only !== 'undefined') params.set('retrieval_only', String(Boolean(anyBody.retrieval_only)));
+
+      const headersGet: Record<string, string> = { 'Accept': 'text/event-stream' };
+      const maybeKey = (body as any)?.api_key as string | undefined;
+      const maybeCourse = (body as any)?.course_name as string | undefined;
+      if (maybeKey) {
+        headersGet['Authorization'] = `Bearer ${maybeKey}`;
+        headersGet['x-api-key'] = maybeKey;
+      }
+      if (maybeCourse) headersGet['x-course-name'] = maybeCourse;
+
+      for (const base of endpoints) {
+        const url = `${base}?${params.toString()}`;
+        const upstreamGet = await fetch(url, { method: 'GET', headers: headersGet });
+        if (upstreamGet.ok) {
+          const contentType = upstreamGet.headers.get('content-type') || 'text/event-stream';
+          return new Response(upstreamGet.body, {
+            status: upstreamGet.status,
+            headers: {
+              'Content-Type': contentType,
+              'Cache-Control': 'no-cache',
+              'Access-Control-Allow-Origin': '*',
+            },
+          });
+        }
+        lastStatus = upstreamGet.status;
+        lastErrorText = (await upstreamGet.text()) || upstreamGet.statusText;
+        if (upstreamGet.status !== 405) break;
+      }
+    } catch (e) {
+      // ignore and fall through to final error
+    }
+
     // If none succeeded, surface the last error with extra context
     return new Response(`UIUC Chat upstream error (${lastStatus}): ${lastErrorText}`, { status: lastStatus });
   } catch (err) {
