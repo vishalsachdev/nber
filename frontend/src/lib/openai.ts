@@ -43,7 +43,8 @@ Please answer based on the transcript above. Be concise and cite specific points
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'text/event-stream'
     },
     body: JSON.stringify({
       model: 'Qwen/Qwen2.5-VL-72B-Instruct',
@@ -105,7 +106,8 @@ Please answer by synthesizing information across these presentations. When refer
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'text/event-stream'
     },
     body: JSON.stringify({
       model: 'Qwen/Qwen2.5-VL-72B-Instruct',

@@ -128,7 +128,8 @@ export async function chatWithOpenAI(
   const response = await fetch('https://uiuc.chat/api/chat-api/chat', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'text/event-stream'
     },
     body: JSON.stringify({
       model: 'Qwen/Qwen2.5-VL-72B-Instruct',
