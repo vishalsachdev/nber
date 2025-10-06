@@ -15,8 +15,8 @@ export default defineConfig({
           console.log(`Proxying ${path} -> ${newPath}`);
           return newPath;
         },
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
             console.log('Proxy request:', req.method, req.url, '-> https://uiuc.chat' + proxyReq.path);
           });
         }
