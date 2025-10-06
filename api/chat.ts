@@ -22,32 +22,49 @@ export default async function handler(req: Request) {
   try {
     const body = await req.json();
 
-    const upstream = await fetch('https://uiuc.chat/api/chat-api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Some providers require explicit SSE accept header
-        'Accept': 'text/event-stream'
-      },
-      body: JSON.stringify(body),
-    });
+    const endpoints = [
+      'https://uiuc.chat/api/chat-api/chat',
+      // Fallback without the leading /api in case of server routing differences
+      'https://uiuc.chat/chat-api/chat',
+    ];
 
-    if (!upstream.ok) {
-      const text = await upstream.text();
-      return new Response(text || upstream.statusText, { status: upstream.status });
+    let lastErrorText = '';
+    let lastStatus = 500;
+    for (const url of endpoints) {
+      const upstream = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (upstream.ok) {
+        const contentType = upstream.headers.get('content-type') || 'text/event-stream';
+        return new Response(upstream.body, {
+          status: upstream.status,
+          headers: {
+            'Content-Type': contentType,
+            'Cache-Control': 'no-cache',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      lastStatus = upstream.status;
+      lastErrorText = (await upstream.text()) || upstream.statusText;
+
+      // If Method Not Allowed, try next endpoint immediately
+      if (upstream.status === 405) {
+        continue;
+      } else {
+        break;
+      }
     }
 
-    // Stream upstream response back to the client.
-    // Do not set hop-by-hop headers like 'Connection' in Edge runtime.
-    const contentType = upstream.headers.get('content-type') || 'text/event-stream';
-    return new Response(upstream.body, {
-      status: upstream.status,
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
-      },
-    });
+    // If none succeeded, surface the last error with extra context
+    return new Response(`UIUC Chat upstream error (${lastStatus}): ${lastErrorText}`, { status: lastStatus });
   } catch (err) {
     // Surface a clearer error message
     const message = err instanceof Error ? err.message : 'Internal server error';
