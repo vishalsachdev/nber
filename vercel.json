@@ -1,6 +1,6 @@
 {
   "functions": {
-    "frontend/api/chat.ts": {
+    "api/chat.ts": {
       "memory": 1024,
       "maxDuration": 30
     }
