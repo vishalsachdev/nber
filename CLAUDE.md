@@ -109,7 +109,7 @@ React + TypeScript application with four main features:
   "presenters": [{"name": "...", "affiliation": "...", "scholar_url": "..."}],
   "num_presenters": 2,
   "description": "Full video description",
-  "ai_summary": "AI-generated 2-3 paragraph summary",  // Added by generate_summaries.py
+  "ai_summary": "AI-generated 2-3 paragraph summary",
   "upload_date": "YYYY-MM-DD",
   "days_ago": 5,
   "has_transcript": true,
@@ -126,11 +126,9 @@ React + TypeScript application with four main features:
 
 ## Environment Variables
 
-Required in `.env` file (never commit this file):
-```
-UIUC_CHAT_API_KEY=uc_your-key-here
-UIUC_CHAT_COURSE_NAME=experimental-chatbot
-```
+Required environment variables (set in environment file, never commit):
+- `UIUC_CHAT_API_KEY` - API key for UIUC Chat
+- `UIUC_CHAT_COURSE_NAME` - Course name for UIUC Chat (e.g., experimental-chatbot)
 
 The app validates credentials at startup and stops with error if missing (app.py:24-31).
 
@@ -192,7 +190,7 @@ If adding fields to video objects:
 1. Update `scripts/generate_summaries.py` to include new field
 2. Update Supabase schema if field should be stored in database
 3. Update TypeScript types in `frontend/src/App.tsx`
-4. Field order: identification → presenters → metadata → transcript
+4. Field order: identification -> presenters -> metadata -> transcript
 
 ## Dependencies
 
@@ -216,8 +214,7 @@ If adding fields to video objects:
 git clone <repo>
 cd nber
 uv sync
-echo "UIUC_CHAT_API_KEY=uc_..." > .env
-echo "UIUC_CHAT_COURSE_NAME=experimental-chatbot" >> .env
+# Set up environment variables in environment file
 ```
 
 ### Extract New Workshop Videos
@@ -255,9 +252,21 @@ uv run python scripts/analyze_presenters.py
 - Always use `uv run` for Python script execution (not bare `python`)
 - All Python scripts are in the `/scripts` directory
 - YouTube transcripts may not be immediately available for new uploads
-- UIUC Chat API credentials must be set in `frontend/.env` before running app
+- UIUC Chat API credentials must be set in frontend environment before running app
 - Free for academic use - no API costs
 - Vercel Edge Functions proxy API requests to avoid CORS issues
 - React app fetches data from Supabase on initial load
 - Transcript context is truncated to ~15k chars for optimal performance
 - Session state is managed client-side and cleared on browser refresh
+
+---
+
+## Current Focus
+- [ ] [Update during /session-start]
+
+## Roadmap
+- [ ] [Add planned features]
+
+## Session Log
+### 2025-12-27
+- Added roadmap sections
